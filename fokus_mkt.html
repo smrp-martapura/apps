@@ -445,7 +445,7 @@
 <!-- Library SDK Firebase Cloud Terintegrasi -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, off } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { getDatabase, ref, set, onValue, off, push, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
     // Konfigurasi Akun Firebase Anda
     const firebaseConfig = {
@@ -501,375 +501,321 @@
                 if(data.rows[name]) {
                     row.querySelector('.target').value = data.rows[name].target || "";
                     row.querySelector('.actual').value = data.rows[name].actual || "";
-                    
-                    const targetVal = parseFloat(data.rows[name].target);
-                    const actualVal = parseFloat(data.rows[name].actual);
-                    const cellPersen = row.querySelector('.text-persen');
-                    if (!isNaN(targetVal) && !isNaN(actualVal) && targetVal > 0) {
-                        const hasil = Math.round((actualVal / targetVal) * 100);
-                        cellPersen.innerText = hasil + "%";
-                        if(hasil >= 60) cellPersen.style.color = "#10b981";
-                        else if(hasil >= 50) cellPersen.style.color = "#f59e0b";
-                        else cellPersen.style.color = "#ef4444";
-                    } else {
-                        cellPersen.innerText = "-";
-                        cellPersen.style.color = "var(--text-main)";
-                    }
                 }
             });
         }
-        document.getElementById('cloudStatusMkt').innerText = "Cloud Sync: Tersinkronisasi ✅";
+        hitungSemuaPersenMkt();
     });
 
+    // --- ENGINE HITUNG OTOMATIS MKT ---
+    window.jalankanUbahMkt = function(el) {
+        const row = el.closest('.mkt-row');
+        const tgt = parseFloat(row.querySelector('.target').value) || 0;
+        const akt = parseFloat(row.querySelector('.actual').value) || 0;
+        const cellPersen = row.querySelector('.text-persen');
 
-    // --- SINKRONISASI 2: ENGINE TABEL KASIR BERDASARKAN NIK (DROP-DOWN) ---
-    window.pushDataKasirFirebase = function() {
-        const nikKasir = document.getElementById('kasirNik').value;
-        document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Menyimpan...";
-        
-        let dataTokoKasir = {
-            week: document.getElementById('kasirWeek').value,
-            tanggal: document.getElementById('kasirTanggal').value,
-            toko: document.getElementById('kasirToko').value,
-            nama: document.getElementById('kasirNama').value,
-            nik: nikKasir,
-            rows: []
-        };
+        if(tgt > 0) {
+            const hasil = Math.round((akt / tgt) * 100);
+            cellPersen.innerText = hasil + "%";
+            if(hasil < 50) cellPersen.style.color = "#ef4444";
+            else if(hasil < 70) cellPersen.style.color = "#f59e0b";
+            else cellPersen.style.color = "#10b981";
+        } else {
+            cellPersen.innerText = "-";
+            cellPersen.style.color = "var(--text-main)";
+        }
+        pushDataMktFirebase();
+    }
 
-        document.querySelectorAll('.kasir-row').forEach(row => {
-            dataTokoKasir.rows.push({
-                deskripsi: row.querySelector('.deskripsi').value,
-                target: row.querySelector('.target-k').value,
-                actual: row.querySelector('.actual-k').value
+    function hitungSemuaPersenMkt() {
+        document.querySelectorAll('.mkt-row').forEach(row => {
+            const tgt = parseFloat(row.querySelector('.target').value) || 0;
+            const akt = parseFloat(row.querySelector('.actual').value) || 0;
+            const cellPersen = row.querySelector('.text-persen');
+            if(tgt > 0) {
+                const hasil = Math.round((akt / tgt) * 100);
+                cellPersen.innerText = hasil + "%";
+                if(hasil < 50) cellPersen.style.color = "#ef4444";
+                else if(hasil < 70) cellPersen.style.color = "#f59e0b";
+                else cellPersen.style.color = "#10b981";
+            } else {
+                cellPersen.innerText = "-";
+                cellPersen.style.color = "var(--text-main)";
+            }
+        });
+    }
+
+    // --- TOMBOL SALIN REKAP MKT DENGAN FORMAT BARU WHATSAPP ---
+    window.copyLaporanMKT = function() {
+        const toko = document.getElementById('toko').value;
+        const nama = document.getElementById('nama').value;
+        const nik = document.getElementById('nik').value;
+
+        let dataItem = {};
+        document.querySelectorAll('.mkt-row').forEach(row => {
+            const name = row.getAttribute('data-name');
+            const tgt = row.querySelector('.target').value;
+            const akt = row.querySelector('.actual').value;
+            const pct = row.querySelector('.text-persen').innerText;
+
+            if (name === "Cashback" || name === "Voucher") {
+                dataItem[name] = akt ? `${tgt}/${akt}/${pct}` : "";
+            } else {
+                dataItem[name] = `${tgt || 0}/${akt || 0}/${pct === '-' ? '0%' : pct}`;
+            }
+        });
+
+        // STRUKTUR TEXT WHATSAPP PERSIS CONTOH USER
+        let teksWA = `Laporan fokus MKT dengan Format,,\n\n`;
+        teksWA += `Toko : ${toko}\n`;
+        teksWA += `Nama : ${nama}\n`;
+        teksWA += `Nik : ${nik}\n\n`;
+        teksWA += `PSM : ${dataItem['PSM']}\n`;
+        teksWA += `PWP : ${dataItem['PWP']}\n`;
+        teksWA += `Serba : ${dataItem['Serba']}\n`;
+        teksWA += `Suueger : ${dataItem['Suueger']}\n`;
+        teksWA += `Cashback : ${dataItem['Cashback']}\n`;
+        teksWA += `Voucher : ${dataItem['Voucher']}\n\n`;
+        teksWA += `Terima Kasih`;
+
+        navigator.clipboard.writeText(teksWA).then(() => {
+            const notif = document.getElementById('notifMkt');
+            notif.style.display = "block";
+            setTimeout(() => { notif.style.display = "none"; }, 3500);
+
+            push(ref(db, 'mkt_history/'), {
+                timestamp: new Date().toLocaleString('id-ID'),
+                toko: toko, nama: nama, nik: nik,
+                psm: dataItem['PSM'], pwp: dataItem['PWP'], 
+                serba: dataItem['Serba'], suueger: dataItem['Suueger']
             });
         });
-
-        set(ref(db, 'kasir_current/' + nikKasir), dataTokoKasir)
-        .then(() => { document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Tersinkronisasi ✅"; })
-        .catch(() => { document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Gagal ❌"; });
     }
 
-    window.switchKasirByNik = function() {
-        const nikKasir = document.getElementById('kasirNik').value;
-        
-        if (currentKasirRef) {
-            off(currentKasirRef);
-        }
 
-        document.getElementById('cloudStatusKasir').innerText = "Memuat Data NIK: " + nikKasir + "...";
-        currentKasirRef = ref(db, 'kasir_current/' + nikKasir);
-
-        onValue(currentKasirRef, (snapshot) => {
-            const cache = snapshot.val();
-            
-            if (!cache) {
-                document.querySelectorAll('.kasir-row').forEach(row => {
-                    row.querySelector('.deskripsi').value = "";
-                    row.querySelector('.target-k').value = "";
-                    row.querySelector('.actual-k').value = "";
-                    row.querySelector('.text-hutang').innerText = "0";
-                });
-                document.getElementById('cloudStatusKasir').innerText = "Data NIK Baru Kosong (Siap Diisi) ✅";
-                return;
-            }
-
-            if (cache.week !== undefined) document.getElementById('kasirWeek').value = cache.week;
-            if (cache.tanggal !== undefined) document.getElementById('kasirTanggal').value = cache.tanggal;
-            if (cache.toko !== undefined) document.getElementById('kasirToko').value = cache.toko;
-
-            if (cache.rows && cache.rows.length > 0) {
-                const rowsDOM = document.querySelectorAll('.kasir-row');
-                cache.rows.forEach((rowData, index) => {
-                    if (rowsDOM[index]) {
-                        rowsDOM[index].querySelector('.deskripsi').value = rowData.deskripsi || "";
-                        rowsDOM[index].querySelector('.target-k').value = rowData.target || "";
-                        rowsDOM[index].querySelector('.actual-k').value = rowData.actual || "";
-                        
-                        const t = parseInt(rowData.target) || 0;
-                        const a = parseInt(rowData.actual) || 0;
-                        let sisa = t - a;
-                        rowsDOM[index].querySelector('.text-hutang').innerText = sisa < 0 ? 0 : sisa;
-                    }
-                });
-            }
-            document.getElementById('cloudStatusKasir').innerText = "Data Terbuka Sesuai NIK ✅";
-        });
-    }
-
-    // Jalankan deteksi pertama kali saat aplikasi dibuka
-    window.switchKasirByNik();
-
-    // Jalur Komunikasi Sinkronisasi Database Log Riwayat
-    window.saveRiwayatFirebase = function(nodeRef, data) {
-        set(ref(db, 'riwayat_' + nodeRef + '/'), data);
-    }
-
-    onValue(ref(db, 'riwayat_mkt/'), (snapshot) => {
-        const list = snapshot.val() || [];
-        renderMktRiwayatHTML(list);
-    });
-
-    onValue(ref(db, 'riwayat_kasir/'), (snapshot) => {
-        const list = snapshot.val() || [];
-        renderKasirRiwayatHTML(list);
-    });
-</script>
-
-<script>
-    // --- DATABASE DAFTAR NIK INTERNAL ---
-    const daftarKaryawan = {
+    // --- SINKRONISASI 2: ENGINE KASIR FOKUS PSM ---
+    const daftarKasir = {
         "26014513": "Mudza",
         "26014456": "Sholahudin",
         "26012274": "Shinta"
     };
 
-    function autoFillKasirNama() {
-        const selectNik = document.getElementById('kasirNik').value;
-        document.getElementById('kasirNama').value = daftarKaryawan[selectNik] || "";
+    window.autoFillKasirNama = function() {
+        const nikSelected = document.getElementById('kasirNik').value;
+        document.getElementById('kasirNama').value = daftarKasir[nikSelected] || "";
     }
 
-    // --- MANAJEMEN LOGIKA UTILITY INTERNAL ---
-    document.addEventListener("DOMContentLoaded", () => {
-        const hariIni = new Date().toISOString().split('T')[0];
-        document.getElementById('kasirTanggal').value = hariIni;
-        autoFillKasirNama(); // Jalankan auto fill saat pertama buka halaman
-        
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                const CACHE_NAME = 'mkt-kasir-cloud-v4';
-                self.addEventListener('install', e => {
-                    e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./', './index.html'])));
-                });
-                self.addEventListener('fetch', e => {
-                    e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: './' }).catch(() => {});
-        }
-    });
+    window.switchKasirByNik = function() {
+        if(currentKasirRef) off(currentKasirRef);
+        const nikSelected = document.getElementById('kasirNik').value;
+        document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Mengambil Data Kasir...";
 
-    function jalankanUbahMkt(input) {
-        hitungPersen(input);
-        window.pushDataMktFirebase();
-    }
-
-    function jalankanUbahKasir(input) {
-        const row = input.closest('.kasir-row');
-        const targetVal = parseInt(row.querySelector('.target-k').value) || 0;
-        const actualVal = parseInt(row.querySelector('.actual-k').value) || 0;
-        let hitungSisa = targetVal - actualVal;
-        row.querySelector('.text-hutang').innerText = hitungSisa < 0 ? 0 : hitungSisa;
-        
-        window.pushDataKasirFirebase();
-    }
-
-    function hitungPersen(input) {
-        const row = input.closest('.mkt-row');
-        const targetVal = parseFloat(row.querySelector('.target').value);
-        const actualVal = parseFloat(row.querySelector('.actual').value);
-        const cellPersen = row.querySelector('.text-persen');
-
-        if (!isNaN(targetVal) && !isNaN(actualVal) && targetVal > 0) {
-            const hasil = Math.round((actualVal / targetVal) * 100);
-            cellPersen.innerText = hasil + "%";
-            if(hasil >= 60) cellPersen.style.color = "#10b981";
-            else if(hasil >= 50) cellPersen.style.color = "#f59e0b";
-            else cellPersen.style.color = "#ef4444";
-        } else {
-            cellPersen.innerText = "-";
-            cellPersen.style.color = "var(--text-main)";
-        }
-    }
-
-    function copyLaporanMKT() {
-        const toko = document.getElementById('toko').value;
-        const nama = document.getElementById('nama').value;
-        const nik = document.getElementById('nik').value;
-        let teksHasil = `Laporan fokus MKT dengan Format,,\n\nToko : ${toko}\nNama : ${nama}\nNik : ${nik}\n\n`;
-        
-        let dataLog = {
-            id: Date.now().toString(),
-            toko: toko, nama: nama,
-            waktu: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
-            items: {}
-        };
-
-        document.querySelectorAll('.mkt-row').forEach(row => {
-            const itemName = row.getAttribute('data-name');
-            const target = row.querySelector('.target').value;
-            const actual = row.querySelector('.actual').value;
-            const persen = row.querySelector('.text-persen').innerText;
-
-            if(target === "" && actual === "") {
-                teksHasil += `${itemName} :\n`;
-                dataLog.items[itemName] = "-";
-            } else {
-                teksHasil += `${itemName} : ${target || 0}/${actual || 0}/${persen}\n`;
-                dataLog.items[itemName] = `${target || 0}/${actual || 0} (${persen})`;
+        currentKasirRef = ref(db, `kasir_current/${nikSelected}`);
+        onValue(currentKasirRef, (snapshot) => {
+            const data = snapshot.val();
+            resetViewTabelKasir();
+            
+            if(data) {
+                if(data.week !== undefined) document.getElementById('kasirWeek').value = data.week;
+                if(data.tanggal !== undefined) document.getElementById('kasirTanggal').value = data.tanggal;
+                if(data.toko !== undefined) document.getElementById('kasirToko').value = data.toko;
+                
+                if(data.rows) {
+                    Object.keys(data.rows).forEach(idx => {
+                        const rowEl = document.querySelector(`.kasir-row[data-index="${idx}"]`);
+                        if(rowEl) {
+                            rowEl.querySelector('.deskripsi').value = data.rows[idx].deskripsi || "";
+                            rowEl.querySelector('.target-k').value = data.rows[idx].target || "";
+                            rowEl.querySelector('.actual-k').value = data.rows[idx].actual || "";
+                        }
+                    });
+                }
             }
-        });
-        teksHasil += `\nTerima Kasih`;
-
-        navigator.clipboard.writeText(teksHasil).then(() => {
-            let list = JSON.parse(localStorage.getItem("riwayat_mkt")) || [];
-            list.unshift(dataLog);
-            localStorage.setItem("riwayat_mkt", JSON.stringify(list));
-            window.saveRiwayatFirebase('mkt', list);
-            notifikasiSukses('notifMkt');
-        }).catch(() => { alert("Gagal menyalin!"); });
-    }
-
-    function renderMktRiwayatHTML(list) {
-        localStorage.setItem("riwayat_mkt", JSON.stringify(list));
-        const tbody = document.getElementById("historyMktBody");
-        tbody.innerHTML = list.length === 0 ? `<tr><td colspan="6" style="text-align:center; color:#94a3b8;">Belum ada riwayat.</td></tr>` : "";
-        
-        list.slice(0, 10).forEach((log, index) => {
-            let tr = document.createElement("tr");
-            let logId = log.id ? `"${log.id}"` : index;
-            tr.innerHTML = `
-                <td><span class="timestamp">${log.waktu}</span><br><strong>${log.toko}</strong><br><small>${log.nama}</small></td>
-                <td style="text-align: center;">${log.items["PSM"] || '-'}</td>
-                <td style="text-align: center;">${log.items["PWP"] || '-'}</td>
-                <td style="text-align: center;">${log.items["Serba"] || '-'}</td>
-                <td style="text-align: center;">${log.items["Suueger"] || '-'}</td>
-                <td style="text-align: center;">
-                    <button class="btn-clear-row" onclick='hapusSatuRiwayat("mkt", ${logId})'>🗑️</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
+            hitungSemuaHutangKasir();
+            document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Sinkron Karyawan (" + nikSelected + ") ✅";
         });
     }
 
-    function resetFormKasir() {
-        if(confirm("Kosongkan semua isi deskripsi, target, dan actual di tabel kasir saat ini?")) {
-            document.querySelectorAll('.kasir-row').forEach(row => {
-                row.querySelector('.deskripsi').value = "";
-                row.querySelector('.target-k').value = "";
-                row.querySelector('.actual-k').value = "";
-                row.querySelector('.text-hutang').innerText = "0";
-            });
-            window.pushDataKasirFirebase();
-        }
-    }
-
-    function copyLaporanKasir() {
-        const week = document.getElementById('kasirWeek').value;
-        const tglInput = document.getElementById('kasirTanggal').value;
-        const toko = document.getElementById('kasirToko').value;
-        const nama = document.getElementById('kasirNama').value;
-        const nik = document.getElementById('kasirNik').value;
-
-        let tglFormatted = tglInput;
-        if(tglInput) {
-            const parts = tglInput.split('-');
-            tglFormatted = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-
-        let teksHasil = `Laporan Kasir Fokus PSM\nWeek : ${week}\nTanggal : ${tglFormatted}\n\nNama : ${nama}\nNik : ${nik}\nToko : ${toko}\n\nFormat laporan : Item/Target/Actual/Sisa Hutang\n\n`;
-        
-        let dataLog = {
-            id: Date.now().toString(),
-            toko: toko, nama: nama, week: week,
-            waktu: new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
-            itemsArray: []
+    window.pushDataKasirFirebase = function() {
+        const nikSelected = document.getElementById('kasirNik').value;
+        let dataKasir = {
+            week: document.getElementById('kasirWeek').value,
+            tanggal: document.getElementById('kasirTanggal').value,
+            toko: document.getElementById('kasirToko').value,
+            nama: document.getElementById('kasirNama').value,
+            rows: {}
         };
 
-        let barisTerisi = 0;
         document.querySelectorAll('.kasir-row').forEach(row => {
-            const deskripsi = row.querySelector('.deskripsi').value.trim();
+            const idx = row.getAttribute('data-index');
+            dataKasir.rows[idx] = {
+                deskripsi: row.querySelector('.deskripsi').value,
+                target: row.querySelector('.target-k').value,
+                actual: row.querySelector('.actual-k').value
+            };
+        });
+
+        set(ref(db, `kasir_current/${nikSelected}`), dataKasir);
+    }
+
+    window.jalankanUbahKasir = function(el) {
+        const row = el.closest('.kasir-row');
+        const tgt = parseFloat(row.querySelector('.target-k').value) || 0;
+        const akt = parseFloat(row.querySelector('.actual-k').value) || 0;
+        row.querySelector('.text-hutang').innerText = (tgt - akt);
+        pushDataKasirFirebase();
+    }
+
+    function hitungSemuaHutangKasir() {
+        document.querySelectorAll('.kasir-row').forEach(row => {
+            const tgt = parseFloat(row.querySelector('.target-k').value) || 0;
+            const akt = parseFloat(row.querySelector('.actual-k').value) || 0;
+            row.querySelector('.text-hutang').innerText = (tgt - akt);
+        });
+    }
+
+    function resetViewTabelKasir() {
+        document.querySelectorAll('.kasir-row').forEach(row => {
+            row.querySelector('.deskripsi').value = "";
+            row.querySelector('.target-k').value = "";
+            row.querySelector('.actual-k').value = "";
+            row.querySelector('.text-hutang').innerText = "0";
+        });
+    }
+
+    window.resetFormKasir = function() {
+        if(confirm("Apakah Anda yakin ingin mengosongkan tabel input kasir ini?")) {
+            resetViewTabelKasir();
+            pushDataKasirFirebase();
+        }
+    }
+
+    // --- TOMBOL SALIN REKAP KASIR DENGAN FORMAT BARU WHATSAPP ---
+    window.copyLaporanKasir = function() {
+        const week = document.getElementById('kasirWeek').value;
+        const tanggal = document.getElementById('kasirTanggal').value;
+        const toko = document.getElementById('kasirToko').value;
+        const nik = document.getElementById('kasirNik').value;
+        const nama = document.getElementById('kasirNama').value;
+
+        let formattedDate = tanggal;
+        if(tanggal) {
+            const d = new Date(tanggal);
+            formattedDate = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+        }
+
+        let teksWA = `Laporan Kasir Fokus PSM\n`;
+        teksWA += `Week : ${week}\n`;
+        teksWA += `Tanggal : ${formattedDate}\n\n`;
+        teksWA += `Nama : ${nama}\n`;
+        teksWA += `Nik : ${nik}\n`;
+        teksWA += `Toko : ${toko}\n\n`;
+        teksWA += `Format laporan : Item/Target/Actual/Sisa Hutang\n\n`;
+
+        let logDetailItem = [];
+        let adaData = false;
+
+        document.querySelectorAll('.kasir-row').forEach(row => {
+            const deskripsi = row.querySelector('.deskripsi').value.trim().toUpperCase();
             const target = row.querySelector('.target-k').value;
             const actual = row.querySelector('.actual-k').value;
             const hutang = row.querySelector('.text-hutang').innerText;
 
-            if (deskripsi !== "" || target !== "" || actual !== "") {
-                barisTerisi++;
-                const itemLabel = deskripsi || `Item Tanpa Nama`;
-                const t = target || 0;
-                const a = actual || 0;
-                
-                teksHasil += `${itemLabel} : ${t}/${a}/${hutang}\n`;
-                dataLog.itemsArray.push(`${itemLabel}: ${t}/${a}/[Sisa: ${hutang}]`);
+            if(deskripsi || target || actual) {
+                adaData = true;
+                teksWA += `${deskripsi || 'ITEM'} : ${target || 0}/${actual || 0}/${hutang}\n`;
+                logDetailItem.push(`${deskripsi || 'ITEM'}:${target || 0}/${actual || 0}/${hutang}`);
             }
         });
 
-        if(barisTerisi === 0) {
-            for(let i=0; i<8; i++) teksHasil += `Deskripsi : ../../..\n`;
-        }
-        teksHasil += `\nTerimakasih`;
+        if(!adaData) teksWA += `(Tidak ada data item)\n`;
+        teksWA += `\nTerimakasih`;
 
-        navigator.clipboard.writeText(teksHasil).then(() => {
-            if(barisTerisi > 0) {
-                let list = JSON.parse(localStorage.getItem("riwayat_kasir")) || [];
-                list.unshift(dataLog);
-                localStorage.setItem("riwayat_kasir", JSON.stringify(list));
-                window.saveRiwayatFirebase('kasir', list);
-            }
-            notifikasiSukses('notifKasir');
-        }).catch(() => { alert("Gagal menyalin!"); });
-    }
+        navigator.clipboard.writeText(teksWA).then(() => {
+            const notif = document.getElementById('notifKasir');
+            notif.style.display = "block";
+            setTimeout(() => { notif.style.display = "none"; }, 3500);
 
-    function renderKasirRiwayatHTML(list) {
-        localStorage.setItem("riwayat_kasir", JSON.stringify(list));
-        const tbody = document.getElementById("historyKasirBody");
-        tbody.innerHTML = list.length === 0 ? `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">Belum ada riwayat kasir.</td></tr>` : "";
-        
-        list.slice(0, 10).forEach((log, index) => {
-            let tr = document.createElement("tr");
-            let itemsHTML = log.itemsArray ? log.itemsArray.map(item => `• ${item}`).join('<br>') : '';
-            let logId = log.id ? `"${log.id}"` : index;
-            tr.innerHTML = `
-                <td><span class="timestamp">${log.waktu}</span><br><strong>${log.toko}</strong><br><small>Kasir: ${log.nama} (Wk ${log.week})</small></td>
-                <td style="line-height: 1.5; color: var(--accent-color);">${itemsHTML}</td>
-                <td style="text-align: center;">
-                    <button class="btn-clear-row" onclick='hapusSatuRiwayat("kasir", ${logId})'>🗑️</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
+            push(ref(db, 'kasir_history/'), {
+                timestamp: new Date().toLocaleString('id-ID'),
+                profil: `${nama} (${nik})`,
+                week: week,
+                detail: logDetailItem.join(" | ") || "Tidak ada detail"
+            });
         });
     }
 
-    function hapusSatuRiwayat(jenis, targetId) {
-        if (confirm(`Hapus baris riwayat ${jenis.toUpperCase()} ini dari cloud?`)) {
-            let list = JSON.parse(localStorage.getItem(`riwayat_${jenis}`)) || [];
-            
-            if (typeof targetId === "string") {
-                list = list.filter(item => item.id !== targetId);
-            } else {
-                list.splice(targetId, 1);
-            }
-            
-            localStorage.setItem(`riwayat_${jenis}`, JSON.stringify(list));
-            window.saveRiwayatFirebase(jenis, list);
+
+    // --- DISPLAY DATABASE HISTORY SYNC LOGS ---
+    onValue(ref(db, 'mkt_history/'), (snapshot) => {
+        const body = document.getElementById('historyMktBody');
+        body.innerHTML = "";
+        const data = snapshot.val();
+        if(!data) { body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#64748b;">Belum ada riwayat.</td></tr>`; return; }
+
+        Object.keys(data).reverse().slice(0, 10).forEach(key => {
+            const item = data[key];
+            body.innerHTML += `
+                <tr>
+                    <td><span class="timestamp">${item.timestamp}</span><br><strong>${item.nama}</strong> (${item.nik})</td>
+                    <td style="text-align:center; font-weight:500;">${item.psm || '-'}</td>
+                    <td style="text-align:center; font-weight:500;">${item.pwp || '-'}</td>
+                    <td style="text-align:center; font-weight:500;">${item.serba || '-'}</td>
+                    <td style="text-align:center; font-weight:500;">${item.suueger || '-'}</td>
+                    <td style="text-align:center;"><button class="btn-clear-row" onclick="hapusHistoryRow('mkt_history','${key}')">❌</button></td>
+                </tr>`;
+        });
+    });
+
+    onValue(ref(db, 'kasir_history/'), (snapshot) => {
+        const body = document.getElementById('historyKasirBody');
+        body.innerHTML = "";
+        const data = snapshot.val();
+        if(!data) { body.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#64748b;">Belum ada riwayat.</td></tr>`; return; }
+
+        Object.keys(data).reverse().slice(0, 10).forEach(key => {
+            const item = data[key];
+            body.innerHTML += `
+                <tr>
+                    <td><span class="timestamp">${item.timestamp}</span><br><strong>${item.profil}</strong><br>Week: ${item.week}</td>
+                    <td style="color:#0f766e; font-weight:500; line-height:1.4;">${item.detail}</td>
+                    <td style="text-align:center;"><button class="btn-clear-row" onclick="hapusHistoryRow('kasir_history','${key}')">❌</button></td>
+                </tr>`;
+        });
+    });
+
+    window.hapusHistoryRow = function(node, key) {
+        if(confirm("Hapus baris riwayat ini dari Cloud?")) {
+            remove(ref(db, `${node}/${key}`));
         }
     }
 
-    function notifikasiSukses(idNotif) {
-        const notif = document.getElementById(idNotif);
-        notif.style.display = 'block';
-        setTimeout(() => { notif.style.display = 'none'; }, 3500);
-    }
 
+    // --- INISIALISASI PROGRAM ---
+    document.getElementById('kasirTanggal').valueAsDate = new Date();
+    autoFillKasirNama();
+    switchKasirByNik();
+</script>
+
+<!-- Logika Tambahan PWA Standalone App Banner -->
+<script>
     let deferredPrompt;
-    const installBanner = document.getElementById('installBanner');
-    const btnInstallApp = document.getElementById('btnInstallApp');
-
+    const banner = document.getElementById('installBanner');
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        installBanner.style.display = 'flex';
+        banner.style.display = 'flex';
     });
-
-    btnInstallApp.addEventListener('click', async () => {
+    document.getElementById('btnInstallApp').addEventListener('click', () => {
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') installBanner.style.display = 'none';
-            deferredPrompt = null;
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') { banner.style.display = 'none'; }
+                deferredPrompt = null;
+            });
         }
     });
+    window.addEventListener('appinstalled', () => { banner.style.display = 'none'; });
 </script>
-
 </body>
 </html>
