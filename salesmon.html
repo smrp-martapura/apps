@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesMon v9.2 (Firebase Realtime) - 1GCX SIMPANG MARTAPURA</title>
+    <title>SalesMon v9.3 (Firebase Fix) - 1GCX SIMPANG MARTAPURA</title>
     
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -300,13 +300,12 @@
 
     <script>
         // ==========================================
-        // 1. CONFIG KONFIGURASI FIREBASE ANDA
+        // 1. CONFIG KONFIGURASI FIREBASE ANDA (JALUR UTAMAKAN REFS)
         // ==========================================
         const firebaseConfig = {
             databaseURL: "https://mentariai-martapura-default-rtdb.firebaseio.com" 
         };
         
-        // Inisialisasi Firebase jika belum di-init
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -314,35 +313,41 @@
 
         // Data Source Master Cadangan (Demo)
         const dataGambarJuni = [
-            { id: "demo_1", tanggalAsli: "2026-06-01", tanggalFormat: "Senin, 1 Jun 2026", nominal: 14390288 },
-            { id: "demo_2", tanggalAsli: "2026-06-02", tanggalFormat: "Selasa, 2 Jun 2026", nominal: 11837958 },
-            { id: "demo_3", tanggalAsli: "2026-06-03", tanggalFormat: "Rabu, 3 Jun 2026", nominal: 12652332 },
-            { id: "demo_4", tanggalAsli: "2026-06-04", tanggalFormat: "Kamis, 4 Jun 2026", nominal: 11187132 },
-            { id: "demo_5", tanggalAsli: "2026-06-05", tanggalFormat: "Jumat, 5 Jun 2026", nominal: 12830657 },
-            { id: "demo_6", tanggalAsli: "2026-06-06", tanggalFormat: "Sabtu, 6 Jun 2026", nominal: 15285034 },
-            { id: "demo_7", tanggalAsli: "2026-06-07", tanggalFormat: "Minggu, 7 Jun 2026", nominal: 12155521 },
-            { id: "demo_8", tanggalAsli: "2026-06-08", tanggalFormat: "Senin, 8 Jun 2026", nominal: 12423737 },
-            { id: "demo_9", tanggalAsli: "2026-06-09", tanggalFormat: "Selasa, 9 Jun 2026", nominal: 14326831 },
-            { id: "demo_10", tanggalAsli: "2026-06-10", tanggalFormat: "Rabu, 10 Jun 2026", nominal: 11558707 },
-            { id: "demo_11", tanggalAsli: "2026-06-11", tanggalFormat: "Kamis, 11 Jun 2026", nominal: 7756412 },
-            { id: "demo_12", tanggalAsli: "2026-06-12", tanggalFormat: "Jumat, 12 Jun 2026", nominal: 13132980 },
-            { id: "demo_13", tanggalAsli: "2026-06-13", tanggalFormat: "Sabtu, 13 Jun 2026", nominal: 15639422 },
-            { id: "demo_14", tanggalAsli: "2026-06-14", tanggalFormat: "Minggu, 14 Jun 2026", nominal: 12800553 },
-            { id: "demo_15", tanggalAsli: "2026-06-15", tanggalFormat: "Senin, 15 Jun 2026", nominal: 14280840 },
-            { id: "demo_16", tanggalAsli: "2026-06-16", tanggalFormat: "Selasa, 16 Jun 2026", nominal: 12187766 }
+            { tanggalAsli: "2026-06-01", tanggalFormat: "Senin, 1 Jun 2026", nominal: 14390288 },
+            { tanggalAsli: "2026-06-02", tanggalFormat: "Selasa, 2 Jun 2026", nominal: 11837958 },
+            { tanggalAsli: "2026-06-03", tanggalFormat: "Rabu, 3 Jun 2026", nominal: 12652332 },
+            { tanggalAsli: "2026-06-04", tanggalFormat: "Kamis, 4 Jun 2026", nominal: 11187132 },
+            { tanggalAsli: "2026-06-05", tanggalFormat: "Jumat, 5 Jun 2026", nominal: 12830657 },
+            { tanggalAsli: "2026-06-06", tanggalFormat: "Sabtu, 6 Jun 2026", nominal: 15285034 },
+            { tanggalAsli: "2026-06-07", tanggalFormat: "Minggu, 7 Jun 2026", nominal: 12155521 },
+            { tanggalAsli: "2026-06-08", tanggalFormat: "Senin, 8 Jun 2026", nominal: 12423737 },
+            { tanggalAsli: "2026-06-09", tanggalFormat: "Selasa, 9 Jun 2026", nominal: 14326831 },
+            { tanggalAsli: "2026-06-10", tanggalFormat: "Rabu, 10 Jun 2026", nominal: 11558707 },
+            { tanggalAsli: "2026-06-11", tanggalFormat: "Kamis, 11 Jun 2026", nominal: 7756412 },
+            { tanggalAsli: "2026-06-12", tanggalFormat: "Jumat, 12 Jun 2026", nominal: 13132980 },
+            { tanggalAsli: "2026-06-13", tanggalFormat: "Sabtu, 13 Jun 2026", nominal: 15639422 },
+            { tanggalAsli: "2026-06-14", tanggalFormat: "Minggu, 14 Jun 2026", nominal: 12800553 },
+            { tanggalAsli: "2026-06-15", tanggalFormat: "Senin, 15 Jun 2026", nominal: 14280840 },
+            { tanggalAsli: "2026-06-16", tanggalFormat: "Selasa, 16 Jun 2026", nominal: 12187766 }
         ];
 
-        // Global State Variables
         let dbSales = [];
         let dbHistory = [];
 
         function initTanggal() {
             const sekarang = new Date();
             const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
-            const stringTgl = sekarang.toLocaleDateString('id-ID', opsi);
-            document.getElementById('current-date').innerText = stringTgl;
-            document.getElementById('pdf-print-date').innerText = stringTgl;
-            document.getElementById('input-tgl-harian').value = sekarang.toISOString().split('T')[0];
+            const stringTgl = machinedateFormat(sekarang);
+            document.getElementById('current-date').innerText = sekarang.toLocaleDateString('id-ID', opsi);
+            document.getElementById('pdf-print-date').innerText = sekarang.toLocaleDateString('id-ID', opsi);
+            document.getElementById('input-tgl-harian').value = stringTgl;
+        }
+
+        function machinedateFormat(d) {
+            let month = '' + (d.getMonth() + 1), day = '' + d.getDate(), year = d.getFullYear();
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            return [year, month, day].join('-');
         }
 
         function formatRupiah(angka) {
@@ -356,10 +361,10 @@
         }
 
         // ==========================================
-        // 2. LOGIC SYNC SINKRONISASI REALTIME FIREBASE
+        // 2. REALTIME LISTENER SINKRONISASI
         // ==========================================
         
-        // Listen Data Konfigurasi/Target dari Firebase
+        // Listen Data Target & Konfigurasi Toko
         db.ref('salesmon_config').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -370,9 +375,11 @@
                 document.getElementById('input-hari-total').value = data.hariTotal || 30;
                 kalkulasiLokalDashboard();
             }
+        }, (error) => {
+            console.error("Gagal sinkron konfigurasi: ", error);
         });
 
-        // Listen Data List Transaksi Harian dari Firebase
+        // Listen Data List Input Transaksi Harian
         db.ref('salesmon_db').on('value', (snapshot) => {
             const data = snapshot.val();
             dbSales = [];
@@ -383,9 +390,11 @@
                 dbSales.sort((a, b) => new Date(a.tanggalAsli) - new Date(b.tanggalAsli));
             }
             kalkulasiLokalDashboard();
+        }, (error) => {
+            console.error("Gagal sinkron database harian: ", error);
         });
 
-        // Listen Data Arsip Tutup Buku History dari Firebase
+        // Listen Data Arsip History Bulanan
         db.ref('salesmon_history').on('value', (snapshot) => {
             const data = snapshot.val();
             dbHistory = [];
@@ -397,7 +406,10 @@
             renderTabelHistory();
         });
 
-        // Fungsi Update Konfigurasi Target ke Firebase (Picu Realtime HP lain)
+        // ==========================================
+        // 3. FUNGSI UPDATE DAN AMANKAN TRANSKASI CLOUD
+        // ==========================================
+        
         function updateConfigKeFirebase() {
             const namaBulan = document.getElementById('input-nama-bulan').value || "Bulan Ini";
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
@@ -405,18 +417,60 @@
             const aktualGm = parseFloat(document.getElementById('input-aktual-gm').value) || 0;
             const hariTotal = parseInt(document.getElementById('input-hari-total').value) || 1;
 
-            db.ref('salesmon_config').set({
+            db.ref('salesmon_config').update({
                 namaBulan: namaBulan,
                 target: targetTotal,
                 targetGm: targetGm,
                 aktualGm: aktualGm,
                 hariTotal: hariTotal
-            }).then(() => {
-                picuStatusSimpan();
+            }, (error) => {
+                if (error) {
+                    alert("Gagal sinkron target ke Firebase: " + error.message);
+                } else {
+                    picuStatusSimpan();
+                }
             });
         }
 
-        // Hitung Lokal & Render Card Tampilan
+        function tambahSalesHarianFirebase() {
+            const tglInput = document.getElementById('input-tgl-harian').value;
+            const nominalInput = parseFloat(document.getElementById('input-sales-harian').value);
+
+            if (!tglInput || isNaN(nominalInput) || nominalInput <= 0) {
+                alert('Silakan masukkan data tanggal dan nominal sales dengan benar!');
+                return;
+            }
+
+            const opsi = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const tglFormatted = new Date(tglInput).toLocaleDateString('id-ID', opsi);
+
+            const objekSales = {
+                tanggalAsli: tglInput,
+                tanggalFormat: tglFormatted,
+                nominal: nominalInput
+            };
+
+            // Menggunakan referensi push() eksplisit agar aman terkirim ke Firebase
+            const newSalesRef = db.ref('salesmon_db').push();
+            newSalesRef.set(objekSales, (error) => {
+                if (error) {
+                    alert("Gagal menyimpan data ke Firebase! Periksa jaringan. Eror: " + error.message);
+                } else {
+                    document.getElementById('input-sales-harian').value = '';
+                    picuStatusSimpan();
+                }
+            });
+        }
+
+        function hapusSalesHarianFirebase(id) {
+            if(confirm("Hapus baris data penjualan ini secara permanen dari Cloud Firebase?")) {
+                db.ref('salesmon_db').child(id).remove((error) => {
+                    if (error) alert("Gagal menghapus: " + error.message);
+                    else picuStatusSimpan();
+                });
+            }
+        }
+
         function kalkulasiLokalDashboard() {
             const namaBulan = document.getElementById('input-nama-bulan').value || "Bulan Ini";
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
@@ -459,41 +513,6 @@
             renderTabelHarian();
         }
 
-        // Tambah Data Sales Harian ke Firebase
-        function tambahSalesHarianFirebase() {
-            const tglInput = document.getElementById('input-tgl-harian').value;
-            const nominalInput = parseFloat(document.getElementById('input-sales-harian').value);
-
-            if (!tglInput || isNaN(nominalInput) || nominalInput <= 0) {
-                alert('Silakan masukkan data tanggal dan nominal sales dengan benar!');
-                return;
-            }
-
-            const opsi = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-            const tglFormatted = new Date(tglInput).toLocaleDateString('id-ID', opsi);
-
-            const objekSales = {
-                tanggalAsli: tglInput,
-                tanggalFormat: tglFormatted,
-                nominal: nominalInput
-            };
-
-            db.ref('salesmon_db').push(objekSales).then(() => {
-                document.getElementById('input-sales-harian').value = '';
-                picuStatusSimpan();
-            });
-        }
-
-        // Hapus Baris Sales Harian dari Firebase
-        function hapusSalesHarianFirebase(id) {
-            if(confirm("Hapus baris data penjualan ini secara permanen dari Cloud Firebase?")) {
-                db.ref(`salesmon_db/${id}`).remove().then(() => {
-                    picuStatusSimpan();
-                });
-            }
-        }
-
-        // Inject Data Demo ke Cloud Firebase
         function resetKeDataAwalFirebase() {
             if(confirm("Apakah Anda ingin menimpa data Firebase dengan data demo 1-16 Juni?")) {
                 db.ref('salesmon_db').set(null).then(() => {
@@ -512,13 +531,11 @@
                         aktualGm: 18.5,
                         hariTotal: 30
                     });
-                    
-                    alert("Berhasil melakukan inject data demo ke Firebase!");
-                });
+                    alert("Berhasil injeksi data demo!");
+                }).catch(err => alert("Gagal reset: " + err.message));
             }
         }
 
-        // Tutup Buku Bulanan & Pindahkan ke History Cloud Firebase
         function tutupBukuBulananFirebase() {
             const namaBulan = document.getElementById('input-nama-bulan').value.trim();
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
@@ -527,12 +544,11 @@
             const persenAchv = targetTotal > 0 ? (aktualSales / targetTotal) * 100 : 0;
 
             if (dbSales.length === 0) {
-                alert("Tabel bulan berjalan kosong! Tidak ada data untuk diarsipkan.");
+                alert("Tabel bulan berjalan kosong! Tidak ada data.");
                 return;
             }
 
-            if(confirm(`TUTUP BUKU PERIODE: "${namaBulan}"?\n\nData total sales akan dipindahkan ke list HISTORY CLOUD, dan data tabel harian berjalan akan dikosongkan.`)) {
-                
+            if(confirm(`TUTUP BUKU PERIODE: "${namaBulan}"?\n\nData akan dipindahkan ke list HISTORY CLOWD.`)) {
                 const objekHistory = {
                     bulan: namaBulan,
                     target: targetTotal,
@@ -541,25 +557,21 @@
                     gm: aktualGm
                 };
 
-                // Dorong ke node history, kemudian hapus node bulan berjalan
                 db.ref('salesmon_history').push(objekHistory).then(() => {
                     db.ref('salesmon_db').set(null).then(() => {
                         db.ref('salesmon_config/namaBulan').set("Bulan Baru");
-                        alert("Bulan Berhasil Ditutup! Data tersimpan aman di database arsip history.");
+                        alert("Bulan Berhasil Ditutup!");
                     });
-                });
+                }).catch(err => alert("Gagal tutup buku: " + err.message));
             }
         }
 
         function hapusHistoryBulanFirebase(id) {
-            if(confirm("Hapus permanen arsip history bulan ini dari database cloud?")) {
-                db.ref(`salesmon_history/${id}`).remove();
+            if(confirm("Hapus permanen arsip history dari cloud?")) {
+                db.ref('salesmon_history').child(id).remove();
             }
         }
 
-        // ==========================================
-        // 3. RENDER TABEL & INTEGRASI WHATSAPP
-        // ==========================================
         function renderTabelHarian() {
             const tbody = document.getElementById('sales-table-body');
             document.getElementById('count-data-harian').innerText = `${dbSales.length} Hari`;
@@ -651,7 +663,7 @@
                 });
             }
             teksWA += `\n-------------------------------------------\n`;
-            teksWA += `_Generated otomatis via SalesMon System v9.2 Realtime_`;
+            teksWA += `_Generated otomatis via SalesMon System v9.3 Realtime_`;
 
             navigator.clipboard.writeText(teksWA).then(() => {
                 const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
