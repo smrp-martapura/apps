@@ -27,7 +27,7 @@
         <!-- FORM INPUT UTAMA -->
         <main class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 flex-1">
             
-            <!-- INFO KARYAWAN (STATIS / BISA DIUBAH) -->
+            <!-- INFO KARYAWAN -->
             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 grid grid-cols-2 gap-2 text-xs font-semibold text-slate-600">
                 <div>Toko: <span class="text-slate-900 font-bold block">Simpang Martapura 1GCX</span></div>
                 <div>Nama: <span class="text-slate-900 font-bold block">Solahudin</span></div>
@@ -84,11 +84,11 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
                         <label class="block text-xs font-bold text-slate-700">💰 Cashback</label>
-                        <input type="text" id="cashback" placeholder="Isi manual jika ada" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg font-bold text-sm text-center">
+                        <input type="text" id="cashback" placeholder="Isi manual" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg font-bold text-sm text-center">
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
                         <label class="block text-xs font-bold text-slate-700">🎟️ Voucher</label>
-                        <input type="text" id="voucher" placeholder="Isi manual jika ada" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg font-bold text-sm text-center">
+                        <input type="text" id="voucher" placeholder="Isi manual" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg font-bold text-sm text-center">
                     </div>
                 </div>
             </div>
@@ -107,9 +107,7 @@
 
     </div>
 
-    <!-- ==========================================
-    JAVASCRIPT LOGIC CALCULATION & SHARE
-    ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         function hitungPersen(tgtId, aktId, pctId) {
             const tgt = parseFloat(document.getElementById(tgtId).value) || 0;
@@ -131,8 +129,8 @@
             hitungPersen('suueger-tgt', 'suueger-akt', 'suueger-pct');
         }
 
+        // FUNGSI SHARE YANG SUDAH DISESUAIKAN FORMATNYA
         function kirimKeWhatsApp() {
-            // Ambil values saat ini
             const psm = `${document.getElementById('psm-tgt').value}/${document.getElementById('psm-akt').value}/${document.getElementById('psm-pct').innerText}`;
             const pwp = `${document.getElementById('pwp-tgt').value}/${document.getElementById('pwp-akt').value}/${document.getElementById('pwp-pct').innerText}`;
             const serba = `${document.getElementById('serba-tgt').value}/${document.getElementById('serba-akt').value}/${document.getElementById('serba-pct').innerText}`;
@@ -140,7 +138,7 @@
             const cashback = document.getElementById('cashback').value.trim();
             const voucher = document.getElementById('voucher').value.trim();
 
-            // Susun teks sesuai template persis
+            // Format teks keluar dinamis sesuai format yang Anda minta
             let teksWA = `Laporan fokus MKT dengan Format,,\n\n`;
             teksWA += `Toko : Simpang Martapura 1GCX\n`;
             teksWA += `Nama : Solahudin\n`;
@@ -153,7 +151,7 @@
             teksWA += `Voucher : ${voucher}\n\n`;
             teksWA += `Terima Kasih`;
 
-            // Eksekusi copy ke sistem dan buka WA
+            // Proses copy otomatis ke clipboard dan buka WhatsApp
             navigator.clipboard.writeText(teksWA).then(() => {
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`, '_blank');
             }).catch(() => {
