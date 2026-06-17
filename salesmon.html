@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesMon v9.0 - 1GCX SIMPANG MARTAPURA</title>
+    <title>SalesMon v9.1 - 1GCX SIMPANG MARTAPURA</title>
     
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,7 +21,7 @@
                 display: none !important; 
             }
             .printable-only { display: block !important; }
-            body, html { background: #ffffff !important; color: #000000 !important; height: auto !important; overflow: visible !important; }
+            body, html { background: #ffffff !important; color: #000000 !important; height: auto !important; overflow: visible !important; position: static !important; }
             .main-content-wrapper { display: block !important; height: auto !important; overflow: visible !important; position: static !important; }
             .cards-container-area { display: block !important; width: 100% !important; }
             .card-print-style { display: flex !important; justify-content: space-between !important; align-items: center !important; background: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 12px !important; padding: 14px !important; margin-bottom: 10px !important; page-break-inside: avoid !important; color: #0f172a !important; }
@@ -149,7 +149,7 @@
                             </h3>
                             
                             <button onclick="kirimRekapWhatsApp()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 px-4 rounded-xl text-sm transition cursor-pointer shadow-sm flex items-center justify-center gap-2">
-                                <i class="fa-brands fa-whatsapp text-lg"></i> SHARE REKAP KE WHATSAPP
+                                <i class="fa-brands fa-whatsapp text-lg"></i> SHARE REKAP LENGKAP KE WA
                             </button>
 
                             <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition cursor-pointer text-xs text-center flex items-center justify-center gap-2 shadow-sm">
@@ -364,7 +364,6 @@
             const persenSisa = Math.max(0, 100 - persenAktual);
             const bebanHarianSisa = hariSisa > 0 ? selisihKekurangan / hariSisa : 0;
 
-            // Update Label Bulan Berjalan
             document.querySelectorAll('.target-label-bulan').forEach(el => el.innerText = namaBulan);
 
             document.getElementById('card-target').innerText = formatRupiah(targetTotal);
@@ -386,7 +385,6 @@
             document.getElementById('text-progres-persen').innerText = `${persenAktual.toFixed(1)}% Terpenuhi`;
             document.getElementById('progress-bar').style.width = `${Math.min(100, persenAktual)}%`;
 
-            // Simpan Konfigurasi Berjalan
             const configToko = {
                 namaBulan: namaBulan,
                 target: targetTotal,
@@ -435,7 +433,7 @@
             }
         }
 
-        // FUNGSI LOGIC KIRIM WHATSAPP DENGAN SUSUNAN TEKS RAPI
+        // FUNGSI WHATSAPP YANG SUDAH DITAMBAHKAN RINCIAN SALES HARIAN
         function kirimRekapWhatsApp() {
             const namaBulan = document.getElementById('input-nama-bulan').value || "Bulan Ini";
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
@@ -452,7 +450,7 @@
             const persenAktual = targetTotal > 0 ? (totalAktualSales / targetTotal) * 100 : 0;
             const bebanHarianSisa = hariSisa > 0 ? selisihKekurangan / hariSisa : 0;
 
-            // Template teks rapi dengan Emoji WhatsApp format bintang (*) untuk bold
+            // 1. Judul & Ringkasan Utama
             let teksWA = `*LAPORAN KINERJA SALESMON - 1GCX SIMPANG MARTAPURA*\n`;
             teksWA += `Periode Laporan: *${namaBulan}*\n`;
             teksWA += `Tanggal Cetak: ${document.getElementById('current-date').innerText}\n`;
@@ -477,21 +475,30 @@
             teksWA += `• Sisa Minus Target: *${formatRupiah(selisihKekurangan)}*\n`;
             teksWA += `• Wajib Kejar per Hari: *${formatRupiah(bebanHarianSisa)}*\n\n`;
             
-            teksWA += `_Generated otomatis via SalesMon System v9.0_`;
+            // 2. BAGIAN BARU: RINCIAN HARIAN (Looping Data Array)
+            teksWA += `📊 *RINCIAN PENJUALAN HARIAN*:\n`;
+            if(dbSales.length === 0) {
+                teksWA += `_Belum ada data input harian_\n`;
+            } else {
+                dbSales.forEach((item, index) => {
+                    // Membuat format list harian: "01. Senin, 1 Jun 2026 : Rp 14.390.288"
+                    const nomor = String(index + 1).padStart(2, '0');
+                    teksWA += `${nomor}. ${item.tanggalFormat} : *${formatRupiah(item.nominal)}*\n`;
+                });
+            }
+            teksWA += `\n-------------------------------------------\n`;
+            teksWA += `_Generated otomatis via SalesMon System v9.1_`;
 
-            // Proses Copy ke Clipboard HP
+            // Proses Copy Ke Clipboard & Buka WhatsApp Link
             navigator.clipboard.writeText(teksWA).then(() => {
-                // Setelah disalin, langsung redirect/oper ke aplikasi WhatsApp
                 const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
                 window.open(linkWhatsApp, '_blank');
             }).catch(err => {
-                // Fallback jika permission browser ditolak, jalankan direct link saja
                 const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
                 window.open(linkWhatsApp, '_blank');
             });
         }
 
-        // FUNGSI ARSIP AKHIR BULAN (TUTUP BUKU)
         function tutupBukuBulanan() {
             const namaBulan = document.getElementById('input-nama-bulan').value.trim();
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
