@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesMon v9.3 (Firebase Fix) - 1GCX SIMPANG MARTAPURA</title>
+    <title>SalesMon v9.5 (Firebase Fixed) - 1GCX SIMPANG MARTAPURA</title>
     
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
+    <!-- Web App Manifest -->
     <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Sales%20Monitoring%20Martapura%22,%22short_name%22:%22SalesMon%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3222/3222675.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
+    <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Firebase SDK Legacy (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -40,6 +43,7 @@
 
     <div class="flex h-screen overflow-hidden main-content-wrapper">
         
+        <!-- SIDEBAR -->
         <aside class="w-64 bg-slate-900 text-white p-6 hidden md:flex flex-col justify-between non-printable">
             <div>
                 <div class="flex items-center space-x-3 mb-10">
@@ -62,8 +66,10 @@
             </div>
         </aside>
 
+        <!-- MAIN CONTENT AREA -->
         <div class="flex-1 flex flex-col overflow-y-auto main-content-wrapper">
             
+            <!-- HEADER -->
             <header class="bg-white shadow-sm px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 non-printable">
                 <div class="flex items-center gap-4">
                     <a href="index.html" class="md:hidden bg-slate-100 p-2.5 rounded-xl text-slate-700 hover:bg-slate-200 transition">
@@ -82,6 +88,7 @@
                 </div>
             </header>
 
+            <!-- DASHBOARD CONTENT -->
             <main class="p-6 max-w-7xl w-full mx-auto space-y-6">
                 
                 <div class="printable-only bg-slate-900 text-white p-5 rounded-2xl mb-6">
@@ -92,41 +99,44 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
+                    <!-- LEFT COLUMN: INPUT PANELS -->
                     <div class="lg:col-span-1 space-y-6 non-printable input-panel-box">
                         
+                        <!-- PANEL 1: TARGET BULANAN SEKARANG -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                             <div class="flex justify-between items-center border-b border-slate-100 pb-2">
                                 <h2 class="text-md font-bold text-slate-700">
                                     <i class="fa-solid fa-sliders mr-2 text-blue-500"></i>Bulan Berjalan
                                 </h2>
                                 <span id="save-status" class="text-xs text-emerald-600 font-bold hidden animate-pulse">
-                                    <i class="fa-solid fa-check-double mr-1"></i>Firebase Sync
+                                    <i class="fa-solid fa-check-double mr-1"></i>Saved & Locked
                                 </span>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Periode Bulan</label>
-                                <input type="text" id="input-nama-bulan" class="w-full px-4 py-2 rounded-xl border border-slate-300 font-bold text-slate-700" value="Juni 2026" onchange="updateConfigKeFirebase()">
+                                <input type="text" id="input-nama-bulan" class="w-full px-4 py-2 rounded-xl border border-slate-300 font-bold text-slate-700" value="Juni 2026" oninput="updateConfigKeFirebase()">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Target Bulanan (Rp)</label>
-                                <input type="number" id="input-target" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" value="350000000" onchange="updateConfigKeFirebase()">
+                                <input type="number" id="input-target" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" value="350000000" oninput="updateConfigKeFirebase()">
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-600 mb-1">Target GM (%)</label>
-                                    <input type="number" step="0.01" id="input-target-gm" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold text-center" value="20" onchange="updateConfigKeFirebase()">
+                                    <input type="number" step="0.01" id="input-target-gm" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold text-center" value="20" oninput="updateConfigKeFirebase()">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-600 mb-1">Aktual GM (%)</label>
-                                    <input type="number" step="0.01" id="input-aktual-gm" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold text-center" value="18.5" onchange="updateConfigKeFirebase()">
+                                    <input type="number" step="0.01" id="input-aktual-gm" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold text-center" value="18.5" oninput="updateConfigKeFirebase()">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Total Hari Kerja Sebulan</label>
-                                <input type="number" id="input-hari-total" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" value="30" onchange="updateConfigKeFirebase()">
+                                <input type="number" id="input-hari-total" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" value="30" oninput="updateConfigKeFirebase()">
                             </div>
                         </div>
 
+                        <!-- PANEL 2: INPUT SALES HARIAN -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                             <div class="border-b border-slate-100 pb-2">
                                 <h2 class="text-md font-bold text-slate-700">
@@ -146,20 +156,20 @@
                             </button>
                         </div>
 
+                        <!-- PANEL INTEGRASI LAPORAN -->
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
                             <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                                 <i class="fa-solid fa-share-nodes text-emerald-600"></i> Integrasi Laporan
                             </h3>
-                            
                             <button onclick="kirimRekapWhatsApp()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 px-4 rounded-xl text-sm transition cursor-pointer shadow-sm flex items-center justify-center gap-2">
                                 <i class="fa-brands fa-whatsapp text-lg"></i> SHARE REKAP LENGKAP KE WA
                             </button>
-
                             <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition cursor-pointer text-xs text-center flex items-center justify-center gap-2 shadow-sm">
                                 <i class="fa-solid fa-print text-amber-400"></i> Cetak Laporan / PDF
                             </button>
                         </div>
 
+                        <!-- PANEL 3: SISTEM TUTUP BUKU BULANAN -->
                         <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 space-y-3">
                             <h3 class="text-sm font-black text-amber-800 uppercase tracking-wide flex items-center gap-1.5">
                                 <i class="fa-solid fa-lock"></i> Manajemen Akhir Bulan
@@ -170,6 +180,7 @@
                             </button>
                         </div>
 
+                        <!-- INJECT ULANG DATA DEMO -->
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                             <button onclick="resetKeDataAwalFirebase()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 px-4 rounded-xl transition cursor-pointer text-xs text-center block">
                                 <i class="fa-solid fa-rotate-left mr-1"></i> Inject Ulang Data Gambar 1-16 Juni
@@ -178,9 +189,12 @@
 
                     </div>
 
+                    <!-- RIGHT COLUMN: DASHBOARD CARDS, HISTORY, & TABLES -->
                     <div class="lg:col-span-2 space-y-6">
                         
+                        <!-- SUMMARY CARDS GRID -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 cards-container-area">
+                            <!-- TARGET TOTAL BULANAN -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Target (<span class="target-label-bulan">Bulan Ini</span>)</p>
@@ -189,6 +203,7 @@
                                 <div class="p-4 bg-blue-50 text-blue-600 rounded-xl non-printable"><i class="fa-solid fa-bullseye text-2xl"></i></div>
                             </div>
 
+                            <!-- AKTUAL SALES -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Actual Sales</p>
@@ -198,6 +213,7 @@
                                 <div class="p-4 bg-emerald-50 text-emerald-600 rounded-xl non-printable"><i class="fa-solid fa-cash-register text-2xl"></i></div>
                             </div>
 
+                            <!-- GROSS MARGIN -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between sm:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-md card-print-style card-dark-print-style">
                                 <div class="space-y-1 w-full">
                                     <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Gross Margin (GM%) Performance</p>
@@ -210,6 +226,7 @@
                                 <div class="p-4 bg-slate-800 text-emerald-400 rounded-xl border border-slate-700 non-printable"><i class="fa-solid fa-percent text-xl"></i></div>
                             </div>
 
+                            <!-- RATA-RATA SALES -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Rataan / Hari (<span id="text-hari-lewat">0</span> Hari)</p>
@@ -218,6 +235,7 @@
                                 <div class="p-4 bg-sky-50 text-sky-600 rounded-xl non-printable"><i class="fa-solid fa-calculator text-2xl"></i></div>
                             </div>
 
+                            <!-- KEKURANGAN TARGET -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Sisa Kekurangan</p>
@@ -227,6 +245,7 @@
                                 <div class="p-4 bg-rose-50 text-rose-600 rounded-xl non-printable"><i class="fa-solid fa-layer-group text-2xl"></i></div>
                             </div>
 
+                            <!-- BEBAN SISA HARI -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between sm:col-span-2 border-l-4 border-l-indigo-500 card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Beban Wajib Harian (<span id="text-hari-sisa">0</span> Hari Sisa)</p>
@@ -235,6 +254,7 @@
                                 <div class="p-4 bg-indigo-50 text-indigo-600 rounded-xl non-printable"><i class="fa-solid fa-hourglass-half text-2xl"></i></div>
                             </div>
 
+                            <!-- PROGRESS BAR -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 sm:col-span-2 card-print-style" style="display: block !important;">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sales Achievement Progress</span>
@@ -246,6 +266,7 @@
                             </div>
                         </div>
 
+                        <!-- PANEL BOX 4: BOX HISTORY DATA BULANAN -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 non-printable">
                             <h3 class="text-lg font-black text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
                                 <i class="fa-solid fa-folder-closed text-amber-500"></i>
@@ -264,11 +285,13 @@
                                         </tr>
                                     </thead>
                                     <tbody id="history-table-body" class="divide-y divide-slate-100 font-medium">
-                                        </tbody>
+                                        <!-- Data History Masuk Sini -->
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
 
+                        <!-- REKAPAN TABLE HARIAN BULAN SEKARANG -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
                                 <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
@@ -287,7 +310,8 @@
                                         </tr>
                                     </thead>
                                     <tbody id="sales-table-body" class="divide-y divide-slate-100">
-                                        </tbody>
+                                        <!-- Diisi Javascript -->
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -299,11 +323,11 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. CONFIG KONFIGURASI FIREBASE ANDA (JALUR UTAMAKAN REFS)
-        // ==========================================
+        // =========================================================================
+        // 1. CONFIG FIREBASE (DISESUAIKAN DENGAN REALTIME DATABASE ANDA - VERBATIM)
+        // =========================================================================
         const firebaseConfig = {
-            databaseURL: "https://mentariai-martapura-default-rtdb.firebaseio.com" 
+            databaseURL: "https://smrp-martapura-app-default-rtdb.asia-southeast1.firebasedatabase.app/" 
         };
         
         if (!firebase.apps.length) {
@@ -337,10 +361,9 @@
         function initTanggal() {
             const sekarang = new Date();
             const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
-            const stringTgl = machinedateFormat(sekarang);
             document.getElementById('current-date').innerText = sekarang.toLocaleDateString('id-ID', opsi);
-            document.getElementById('pdf-print-date').innerText = sekarang.toLocaleDateString('id-ID', opsi);
-            document.getElementById('input-tgl-harian').value = stringTgl;
+            document.getElementById('pdf-print-date').innerText = BirdFormatTglIndo(sekarang);
+            document.getElementById('input-tgl-harian').value = machinedateFormat(sekarang);
         }
 
         function machinedateFormat(d) {
@@ -350,6 +373,11 @@
             return [year, month, day].join('-');
         }
 
+        function BirdFormatTglIndo(d) {
+            const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
+            return d.toLocaleDateString('id-ID', opsi);
+        }
+
         function formatRupiah(angka) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
         }
@@ -357,14 +385,28 @@
         function picuStatusSimpan() {
             const status = document.getElementById('save-status');
             status.classList.remove('hidden');
-            setTimeout(() => status.classList.add('hidden'), 1200);
+            setTimeout(() => status.classList.add('hidden'), 1500);
         }
 
         // ==========================================
-        // 2. REALTIME LISTENER SINKRONISASI
+        // 2. BACKUP ENGINE (LOCAL STORAGE HARDFIX)
         // ==========================================
+        function muatKonfigurasiLokalCadangan() {
+            const lokalData = localStorage.getItem('salesmon_lock_config');
+            if (lokalData) {
+                const data = JSON.parse(lokalData);
+                document.getElementById('input-nama-bulan').value = data.namaBulan;
+                document.getElementById('input-target').value = data.target;
+                document.getElementById('input-target-gm').value = data.targetGm;
+                document.getElementById('input-aktual-gm').value = data.aktualGm;
+                document.getElementById('input-hari-total').value = data.hariTotal;
+            }
+        }
+
+        // =========================================================
+        // 3. LISTENERS DATA FIREBASE CLOUD (NODE BARU KHUSUS SALESMON)
+        // =========================================================
         
-        // Listen Data Target & Konfigurasi Toko
         db.ref('salesmon_config').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -373,13 +415,16 @@
                 document.getElementById('input-target-gm').value = data.targetGm || 20;
                 document.getElementById('input-aktual-gm').value = data.aktualGm || 18.5;
                 document.getElementById('input-hari-total').value = data.hariTotal || 30;
+                
+                localStorage.setItem('salesmon_lock_config', JSON.stringify(data));
                 kalkulasiLokalDashboard();
             }
         }, (error) => {
-            console.error("Gagal sinkron konfigurasi: ", error);
+            console.warn("Koneksi Firebase lambat atau ditolak Rules. Memakai cadangan Lokal.");
+            muatKonfigurasiLokalCadangan();
+            kalkulasiLokalDashboard();
         });
 
-        // Listen Data List Input Transaksi Harian
         db.ref('salesmon_db').on('value', (snapshot) => {
             const data = snapshot.val();
             dbSales = [];
@@ -390,11 +435,8 @@
                 dbSales.sort((a, b) => new Date(a.tanggalAsli) - new Date(b.tanggalAsli));
             }
             kalkulasiLokalDashboard();
-        }, (error) => {
-            console.error("Gagal sinkron database harian: ", error);
         });
 
-        // Listen Data Arsip History Bulanan
         db.ref('salesmon_history').on('value', (snapshot) => {
             const data = snapshot.val();
             dbHistory = [];
@@ -407,7 +449,7 @@
         });
 
         // ==========================================
-        // 3. FUNGSI UPDATE DAN AMANKAN TRANSKASI CLOUD
+        // 4. CORE CONTROLLER ACTIONS
         // ==========================================
         
         function updateConfigKeFirebase() {
@@ -417,19 +459,23 @@
             const aktualGm = parseFloat(document.getElementById('input-aktual-gm').value) || 0;
             const hariTotal = parseInt(document.getElementById('input-hari-total').value) || 1;
 
-            db.ref('salesmon_config').update({
+            const objekKonfig = {
                 namaBulan: namaBulan,
                 target: targetTotal,
                 targetGm: targetGm,
                 aktualGm: aktualGm,
                 hariTotal: hariTotal
-            }, (error) => {
-                if (error) {
-                    alert("Gagal sinkron target ke Firebase: " + error.message);
-                } else {
+            };
+
+            localStorage.setItem('salesmon_lock_config', JSON.stringify(objekKonfig));
+
+            db.ref('salesmon_config').set(objekKonfig, (error) => {
+                if (!error) {
                     picuStatusSimpan();
                 }
             });
+
+            kalkulasiLokalDashboard();
         }
 
         function tambahSalesHarianFirebase() {
@@ -450,11 +496,9 @@
                 nominal: nominalInput
             };
 
-            // Menggunakan referensi push() eksplisit agar aman terkirim ke Firebase
-            const newSalesRef = db.ref('salesmon_db').push();
-            newSalesRef.set(objekSales, (error) => {
+            db.ref('salesmon_db').push().set(objekSales, (error) => {
                 if (error) {
-                    alert("Gagal menyimpan data ke Firebase! Periksa jaringan. Eror: " + error.message);
+                    alert("Gagal simpan ke Firebase. Periksa aturan Rules Database Anda.");
                 } else {
                     document.getElementById('input-sales-harian').value = '';
                     picuStatusSimpan();
@@ -464,9 +508,8 @@
 
         function hapusSalesHarianFirebase(id) {
             if(confirm("Hapus baris data penjualan ini secara permanen dari Cloud Firebase?")) {
-                db.ref('salesmon_db').child(id).remove((error) => {
-                    if (error) alert("Gagal menghapus: " + error.message);
-                    else picuStatusSimpan();
+                db.ref('salesmon_db').child(id).remove((err) => {
+                    if(!err) picuStatusSimpan();
                 });
             }
         }
@@ -524,15 +567,17 @@
                         });
                     });
                     
-                    db.ref('salesmon_config').set({
+                    const initConfig = {
                         namaBulan: "Juni 2026",
                         target: 350000000,
                         targetGm: 20,
                         aktualGm: 18.5,
                         hariTotal: 30
-                    });
-                    alert("Berhasil injeksi data demo!");
-                }).catch(err => alert("Gagal reset: " + err.message));
+                    };
+                    db.ref('salesmon_config').set(initConfig);
+                    localStorage.setItem('salesmon_lock_config', JSON.stringify(initConfig));
+                    alert("Sukses injeksi data demo ke database Anda!");
+                });
             }
         }
 
@@ -544,11 +589,11 @@
             const persenAchv = targetTotal > 0 ? (aktualSales / targetTotal) * 100 : 0;
 
             if (dbSales.length === 0) {
-                alert("Tabel bulan berjalan kosong! Tidak ada data.");
+                alert("Tabel harian kosong!");
                 return;
             }
 
-            if(confirm(`TUTUP BUKU PERIODE: "${namaBulan}"?\n\nData akan dipindahkan ke list HISTORY CLOWD.`)) {
+            if(confirm(`TUTUP BUKU PERIODE: "${namaBulan}"?`)) {
                 const objekHistory = {
                     bulan: namaBulan,
                     target: targetTotal,
@@ -557,17 +602,29 @@
                     gm: aktualGm
                 };
 
-                db.ref('salesmon_history').push(objekHistory).then(() => {
+                db.ref('salesmon_history').push().set(objekHistory).then(() => {
                     db.ref('salesmon_db').set(null).then(() => {
-                        db.ref('salesmon_config/namaBulan').set("Bulan Baru");
+                        const nextMonthConfig = {
+                            namaBulan: "Bulan Baru",
+                            target: 350000000,
+                            targetGm: 20,
+                            aktualGm: 20,
+                            hariTotal: 30
+                        };
+                        db.ref('salesmon_config').set(nextMonthConfig);
+                        localStorage.setItem('salesmon_lock_config', JSON.stringify(nextMonthConfig));
                         alert("Bulan Berhasil Ditutup!");
                     });
-                }).catch(err => alert("Gagal tutup buku: " + err.message));
+                });
             }
         }
 
+        function htmlEscape(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
         function hapusHistoryBulanFirebase(id) {
-            if(confirm("Hapus permanen arsip history dari cloud?")) {
+            if(confirm("Hapus permanen arsip history?")) {
                 db.ref('salesmon_history').child(id).remove();
             }
         }
@@ -583,7 +640,7 @@
 
             tbody.innerHTML = dbSales.map(item => `
                 <tr class="hover:bg-slate-50 transition">
-                    <td class="py-3 px-4 font-semibold text-slate-700">${item.tanggalFormat}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-700">${htmlEscape(item.tanggalFormat)}</td>
                     <td class="py-3 px-4 text-right font-bold text-slate-900">${formatRupiah(item.nominal)}</td>
                     <td class="py-3 px-4 text-center action-column">
                         <button onclick="hapusSalesHarianFirebase('${item.id}')" class="text-rose-500 hover:text-rose-700 p-1 rounded-md transition cursor-pointer"><i class="fa-solid fa-trash-can"></i></button>
@@ -601,7 +658,7 @@
 
             tbody.innerHTML = dbHistory.map(h => `
                 <tr class="hover:bg-slate-50 text-xs border-b border-slate-100">
-                    <td class="py-2.5 px-3 font-bold text-slate-800">${h.bulan}</td>
+                    <td class="py-2.5 px-3 font-bold text-slate-800">${htmlEscape(h.bulan)}</td>
                     <td class="py-2.5 px-3 text-right text-slate-500">${formatRupiah(h.target)}</td>
                     <td class="py-2.5 px-3 text-right text-emerald-600 font-bold">${formatRupiah(h.pencapaian)}</td>
                     <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded ${h.achv >= 100 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'} font-bold">${h.achv.toFixed(1)}%</span></td>
@@ -663,18 +720,17 @@
                 });
             }
             teksWA += `\n-------------------------------------------\n`;
-            teksWA += `_Generated otomatis via SalesMon System v9.3 Realtime_`;
+            teksWA += `_Generated otomatis via SalesMon System v9.5 Dual-Sync_`;
 
             navigator.clipboard.writeText(teksWA).then(() => {
-                const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
-                window.open(linkWhatsApp, '_blank');
-            }).catch(err => {
-                const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
-                window.open(linkWhatsApp, '_blank');
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`, '_blank');
+            }).catch(() => {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`, '_blank');
             });
         }
 
         window.onload = function() {
+            muatKonfigurasiLokalCadangan();
             initTanggal();
         };
     </script>
