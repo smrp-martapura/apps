@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMRP Martapura - Super App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border-top: 5px solid #0056b3;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .menu-card h2 {
+            margin-bottom: 15px;
+            color: #0056b3;
+        }
+        .menu-card p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            color: white;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SMRP MARTAPURA SUPER APP</h1>
+        <p>Satu Aplikasi untuk Semua Kebutuhan Operasional</p>
+    </header>
+
+    <div class="container">
+        <div class="menu-grid">
+            
+            <div class="menu-card" onclick="bukaMenu('list_rh.html')">
+                <h2>📋 ListRH</h2>
+                <p>Akses data dan pengelolaan administrasi ListRH secara terpusat.</p>
+            </div>
+
+            <div class="menu-card" onclick="bukaMenu('fokus_mkt.html')" style="border-top-color: #28a745;">
+                <h2 style="color: #28a745;">🎯 Fokus Marketing</h2>
+                <p>Pantau program promosi toko, target marketing, dan layout display.</p>
+            </div>
+
+            <div class="menu-card" onclick="bukaMenu('ikt.html')" style="border-top-color: #dc3545;">
+                <h2 style="color: #dc3545;">📊 IKT</h2>
+                <p>Laporan performa, indikator kerja, dan pencapaian operasional.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 SMRP Martapura. All Rights Reserved.
+    </footer>
+
+    <script>
+        function bukaMenu(halaman) {
+            // Fungsi ini akan mengalihkan halaman sesuai menu yang diklik
+            window.location.href = halaman;
+        }
+    </script>
+</body>
+</html>

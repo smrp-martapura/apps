@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesMon v7.2 - 1GCX SIMPANG MARTAPURA</title>
+    
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Sales%20Monitoring%20Martapura%22,%22short_name%22:%22SalesMon%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3222/3222675.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- STYLE CETAK REVISI TOTAL -->
+    <style>
+        .printable-only { display: none; }
+
+        @media print {
+            .non-printable, aside, button, .input-panel-box, .action-column { 
+                display: none !important; 
+            }
+            
+            .printable-only { 
+                display: block !important; 
+            }
+
+            body, html {
+                background: #ffffff !important;
+                color: #000000 !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            .main-content-wrapper {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+                position: static !important;
+            }
+
+            .cards-container-area {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            .card-print-style {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                background: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 12px !important;
+                padding: 14px !important;
+                margin-bottom: 10px !important;
+                page-break-inside: avoid !important;
+                color: #0f172a !important;
+            }
+
+            .card-dark-print-style {
+                background-color: #0f172a !important;
+                color: #ffffff !important;
+                border: none !important;
+            }
+
+            /* Desain Tabel Saat Di-print agar menghemat kertas */
+            .table-print-style {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin-top: 20px !important;
+                page-break-inside: auto !important;
+            }
+            .table-print-style tr {
+                page-break-inside: avoid !important;
+                page-break-after: auto !important;
+            }
+            .table-print-style th, .table-print-style td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 8px 12px !important;
+                text-align: left !important;
+                font-size: 12px !important;
+            }
+            .table-print-style th {
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans text-slate-800">
+
+    <div class="flex h-screen overflow-hidden main-content-wrapper">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-slate-900 text-white p-6 hidden md:flex flex-col justify-between non-printable">
+            <div>
+                <div class="flex items-center space-x-3 mb-10">
+                    <i class="fa-solid fa-chart-line text-2xl text-emerald-400"></i>
+                    <span class="text-xl font-bold tracking-wider">SALESMON</span>
+                </div>
+                <nav class="space-y-2">
+                    <a href="index.html" class="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 font-medium transition">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Menu Utama</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-emerald-600 text-white font-medium transition">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard Sales</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="text-xs text-slate-500 border-t border-slate-800 pt-4">
+                Tokomart &copy; 2026
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="flex-1 flex flex-col overflow-y-auto main-content-wrapper">
+            
+            <!-- HEADER -->
+            <header class="bg-white shadow-sm px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 non-printable">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="md:hidden bg-slate-100 p-2.5 rounded-xl text-slate-700 hover:bg-slate-200 transition">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <div>
+                        <span class="text-xs font-bold text-emerald-600 tracking-wider block uppercase">Retail Monitoring System</span>
+                        <h1 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-store text-slate-700"></i>
+                            1GCX SIMPANG MARTAPURA
+                        </h1>
+                    </div>
+                </div>
+                <div class="text-sm font-semibold text-slate-600 bg-slate-100 px-4 py-2 rounded-full whitespace-nowrap">
+                    <i class="fa-regular fa-clock mr-1.5 text-slate-400"></i><span id="current-date">--/--/----</span>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT -->
+            <main class="p-6 max-w-7xl w-full mx-auto space-y-6">
+                
+                <!-- Keterangan Laporan yang Muncul Hanya di Lembar PDF -->
+                <div class="printable-only bg-slate-900 text-white p-5 rounded-2xl mb-6">
+                    <p class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Laporan Kinerja Resmi Toko</p>
+                    <h2 class="text-xl font-black tracking-wide">1GCX SIMPANG MARTAPURA</h2>
+                    <p class="text-xs text-slate-400 mt-1">Sistem SalesMon • Dicetak pada: <span id="pdf-print-date"></span></p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- LEFT COLUMN: INPUT PANELS -->
+                    <div class="lg:col-span-1 space-y-6 non-printable input-panel-box">
+                        
+                        <!-- PANEL 1: TARGET UTAMA -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <h2 class="text-md font-bold text-slate-700">
+                                    <i class="fa-solid fa-sliders mr-2 text-blue-500"></i>Target & Parameter
+                                </h2>
+                                <span id="save-status" class="text-xs text-emerald-600 font-bold hidden animate-pulse">
+                                    <i class="fa-solid fa-check-double mr-1"></i>Tersimpan
+                                </span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Target Bulanan (Rp)</label>
+                                <input type="number" id="input-target" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" value="350000000" oninput="kalkulasiDashboard()">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Target GM (%)</label>
+                                    <input type="number" step="0.01" id="input-target-gm" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold text-center" value="20" oninput="kalkulasiDashboard()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Aktual GM (%)</label>
+                                    <input type="number" step="0.01" id="input-aktual-gm" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold text-center" value="18.5" oninput="kalkulasiDashboard()">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Total Hari Kerja Sebulan</label>
+                                <input type="number" id="input-hari-total" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" value="30" oninput="kalkulasiDashboard()">
+                            </div>
+                        </div>
+
+                        <!-- PANEL 2: INPUT SALES HARIAN -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                            <div class="border-b border-slate-100 pb-2">
+                                <h2 class="text-md font-bold text-slate-700">
+                                    <i class="fa-solid fa-calendar-plus mr-2 text-emerald-500"></i>Input Sales Harian
+                                </h2>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Tanggal</label>
+                                <input type="date" id="input-tgl-harian" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal Sales (Rp)</label>
+                                <input type="number" id="input-sales-harian" class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-bold" placeholder="Contoh: 12000000">
+                            </div>
+                            <button onclick="tambahSalesHarian()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl transition cursor-pointer text-sm shadow-sm">
+                                <i class="fa-solid fa-plus mr-1"></i> Tambah ke Rekapan
+                            </button>
+                        </div>
+
+                        <!-- TOMBOL CETAK -->
+                        <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-xl transition cursor-pointer text-center block shadow-md">
+                            <i class="fa-solid fa-print mr-2 text-amber-400"></i>Cetak / Save Ke PDF
+                        </button>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: DASHBOARD CARDS & TABLES -->
+                    <div class="lg:col-span-2 space-y-6">
+                        
+                        <!-- SUMMARY CARDS GRID -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 cards-container-area">
+                            
+                            <!-- TARGET TOTAL BULANAN -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Target Bulanan</p>
+                                    <h3 class="text-2xl font-black text-slate-800 mt-1" id="card-target">Rp 0</h3>
+                                </div>
+                                <div class="p-4 bg-blue-50 text-blue-600 rounded-xl non-printable"><i class="fa-solid fa-bullseye text-2xl"></i></div>
+                            </div>
+
+                            <!-- AKTUAL SALES -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Actual Sales (Total)</p>
+                                    <h3 class="text-2xl font-black text-slate-800 mt-1" id="card-aktual">Rp 0</h3>
+                                    <span class="inline-block mt-1 text-xs font-bold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full" id="badge-persen-aktual">0%</span>
+                                </div>
+                                <div class="p-4 bg-emerald-50 text-emerald-600 rounded-xl non-printable"><i class="fa-solid fa-cash-register text-2xl"></i></div>
+                            </div>
+
+                            <!-- KINERJA GROSS MARGIN (GM%) -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between sm:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-md card-print-style card-dark-print-style">
+                                <div class="space-y-1 w-full">
+                                    <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Gross Margin (GM%) Performance</p>
+                                    <div class="flex items-baseline justify-between sm:justify-start gap-4 sm:gap-8 pt-1">
+                                        <div>
+                                            <span class="text-xs text-slate-400 block">Target GM</span>
+                                            <span class="text-xl font-bold" id="card-target-gm">0%</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-slate-400 block">Aktual GM</span>
+                                            <span class="text-2xl font-black text-emerald-400" id="card-aktual-gm">0%</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs text-slate-400 block">Variance</span>
+                                            <span class="text-lg font-bold" id="card-variance-gm">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-slate-800 text-emerald-400 rounded-xl border border-slate-700 non-printable"><i class="fa-solid fa-percent text-xl"></i></div>
+                            </div>
+
+                            <!-- RATA-RATA SALES / HARI -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Rata-rata Sales / Hari (<span id="text-hari-lewat">0</span> Hari)</p>
+                                    <h3 class="text-2xl font-black text-slate-700 mt-1" id="card-rata-hari">Rp 0</h3>
+                                </div>
+                                <div class="p-4 bg-sky-50 text-sky-600 rounded-xl non-printable"><i class="fa-solid fa-calculator text-2xl"></i></div>
+                            </div>
+
+                            <!-- TOTAL SISA TARGET -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Sisa Kekurangan Target</p>
+                                    <h3 class="text-2xl font-black text-rose-600 mt-1" id="card-selisih">Rp 0</h3>
+                                    <span class="text-xs font-bold text-rose-400" id="card-persen-sisa">0% sisa</span>
+                                </div>
+                                <div class="p-4 bg-rose-50 text-rose-600 rounded-xl non-printable"><i class="fa-solid fa-layer-group text-2xl"></i></div>
+                            </div>
+
+                            <!-- BEBAN TARGET / SISA HARI -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between sm:col-span-2 border-l-4 border-l-indigo-500 card-print-style">
+                                <div>
+                                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Beban Wajib / Sisa Hari Kerja (<span id="text-hari-sisa">0</span> Hari Sisa)</p>
+                                    <h3 class="text-2xl font-black text-indigo-600 mt-1" id="card-target-per-hari">Rp 0</h3>
+                                    <p class="text-xs text-slate-400 mt-1">Target harian minimum di sisa hari operasional agar target bulanan jebol.</p>
+                                </div>
+                                <div class="p-4 bg-indigo-50 text-indigo-600 rounded-xl non-printable"><i class="fa-solid fa-hourglass-half text-2xl"></i></div>
+                            </div>
+
+                            <!-- PROGRESS BAR -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 sm:col-span-2 card-print-style" style="display: block !important;">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sales Achievement Progress</span>
+                                    <span class="text-sm font-bold text-emerald-600" id="text-progres-persen">0% Terpenuhi</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                    <div id="progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- REKAPAN TABLE AREA -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
+                                <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check text-emerald-600"></i>
+                                    Tabel Rekapan Sales Harian
+                                </h3>
+                                <span class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full non-printable" id="count-data-harian">0 Data</span>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left text-slate-600 table-print-style" id="tabel-sales-harian">
+                                    <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
+                                        <tr>
+                                            <th class="py-3 px-4">Hari / Tanggal</th>
+                                            <th class="py-3 px-4 text-right">Nominal Sales</th>
+                                            <th class="py-3 px-4 text-center action-column">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sales-table-body" class="divide-y divide-slate-100">
+                                        <!-- Data dimasukkan via Javascript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- LOGIKA CORE ENGINE SYSTEM -->
+    <script>
+        // Inisialisasi Database Internal Storage
+        let dbSales = JSON.parse(localStorage.getItem('salesmon_db')) || [];
+        
+        // Atur Tanggal Otomatis di Layar & Cetakan PDF
+        function initTanggal() {
+            const sekarang = new Date();
+            const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
+            const stringTgl = sekarang.toLocaleDateString('id-ID', opsi);
+            
+            document.getElementById('current-date').innerText = stringTgl;
+            document.getElementById('pdf-print-date').innerText = stringTgl;
+            
+            // Set default tanggal input hari ini
+            document.getElementById('input-tgl-harian').value = sekarang.toISOString().split('T')[0];
+        }
+
+        // Format Angka ke Rupiah Currency
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 0
+            }).format(angka);
+        }
+
+        // Atur Notifikasi Status Tersimpan Sementara
+        function picuStatusSimpan() {
+            const status = document.getElementById('save-status');
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 1500);
+        }
+
+        // Core Engine Hitung Otomatis Seluruh Elemen Dashboard
+        function kalkulasiDashboard() {
+            // Ambil data parameter
+            const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
+            const targetGm = parseFloat(document.getElementById('input-target-gm').value) || 0;
+            const aktualGm = parseFloat(document.getElementById('input-aktual-gm').value) || 0;
+            const hariTotal = parseInt(document.getElementById('input-hari-total').value) || 1;
+
+            // Hitung actual sales total dari array rekapan harian
+            const totalAktualSales = dbSales.reduce((sum, item) => sum + item.nominal, 0);
+            const hariLewat = dbSales.length;
+            const hariSisa = Math.max(0, hariTotal - hariLewat);
+
+            // Perhitungan Variabel Utama
+            const varianceGm = aktualGm - targetGm;
+            const rataHari = hariLewat > 0 ? totalAktualSales / hariLewat : 0;
+            const selisihKekurangan = Math.max(0, targetTotal - totalAktualSales);
+            const persenAktual = targetTotal > 0 ? (totalAktualSales / targetTotal) * 100 : 0;
+            const persenSisa = Math.max(0, 100 - persenAktual);
+            const bebanHarianSisa = hariSisa > 0 ? selisihKekurangan / hariSisa : 0;
+
+            // Update Semua Tampilan Kartu Ringkasan
+            document.getElementById('card-target').innerText = formatRupiah(targetTotal);
+            document.getElementById('card-aktual').innerText = formatRupiah(totalAktualSales);
+            document.getElementById('badge-persen-aktual').innerText = `${persenAktual.toFixed(1)}%`;
+            
+            document.getElementById('card-target-gm').innerText = `${targetGm.toFixed(2)}%`;
+            document.getElementById('card-aktual-gm').innerText = `${aktualGm.toFixed(2)}%`;
+            
+            const elVariance = document.getElementById('card-variance-gm');
+            elVariance.innerText = `${varianceGm >= 0 ? '+' : ''}${varianceGm.toFixed(2)}%`;
+            elVariance.className = `text-lg font-bold ${varianceGm >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+
+            document.getElementById('text-hari-lewat').innerText = hariLewat;
+            document.getElementById('card-rata-hari').innerText = formatRupiah(rataHari);
+            
+            document.getElementById('card-selisih').innerText = formatRupiah(selisihKekurangan);
+            document.getElementById('card-persen-sisa').innerText = `${persenSisa.toFixed(1)}% sisa`;
+            
+            document.getElementById('text-hari-sisa').innerText = hariSisa;
+            document.getElementById('card-target-per-hari').innerText = formatRupiah(bebanHarianSisa);
+
+            // Update Progress Bar Kinerja Toko
+            document.getElementById('text-progres-persen').innerText = `${persenAktual.toFixed(1)}% Terpenuhi`;
+            document.getElementById('progress-bar').style.width = `${Math.min(100, persenAktual)}%`;
+
+            // Simpan parameter input ke LocalStorage agar tidak hilang saat di-refresh
+            const configToko = {
+                target: targetTotal,
+                targetGm: targetGm,
+                aktualGm: aktualGm,
+                hariTotal: hariTotal
+            };
+            localStorage.setItem('salesmon_config', JSON.stringify(configToko));
+            
+            renderTabelHarian();
+        }
+
+        // Fungsi Tambah Data Sales Harian
+        function tambahSalesHarian() {
+            const tglInput = document.getElementById('input-tgl-harian').value;
+            const nominalInput = parseFloat(document.getElementById('input-sales-harian').value);
+
+            if (!tglInput || isNaN(nominalInput) || nominalInput <= 0) {
+                alert('Silakan masukkan tanggal dan nominal sales harian dengan benar!');
+                return;
+            }
+
+            // Format tanggal Indonesia
+            const opsi = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const tglFormatted = new Date(tglInput).toLocaleDateString('id-ID', opsi);
+
+            // Tambahkan objek data ke array database
+            dbSales.push({
+                id: Date.now(),
+                tanggalAsli: tglInput,
+                tanggalFormat: tglFormatted,
+                nominal: nominalInput
+            });
+
+            // Urutkan data berdasarkan tanggal asli terkecil agar kronologis
+            dbSales.sort((a, b) => new Date(a.tanggalAsli) - new Date(b.tanggalAsli));
+
+            // Simpan ke storage dan refresh dashboard
+            localStorage.setItem('salesmon_db', JSON.stringify(dbSales));
+            document.getElementById('input-sales-harian').value = '';
+            
+            picuStatusSimpan();
+            kalkulasiDashboard();
+        }
+
+        // Fungsi Hapus Baris Data Rekapan
+        function hapusSalesHarian(id) {
+            if(confirm("Apakah Anda yakin ingin menghapus data penjualan hari ini?")) {
+                dbSales = dbSales.filter(item => item.id !== id);
+                localStorage.setItem('salesmon_db', JSON.stringify(dbSales));
+                picuStatusSimpan();
+                kalkulasiDashboard();
+            }
+        }
+
+        // Merender Tampilan Tabel Rekapan Sales Harian
+        function renderTabelHarian() {
+            const tbody = document.getElementById('sales-table-body');
+            document.getElementById('count-data-harian').innerText = `${dbSales.length} Data`;
+            
+            if (dbSales.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="py-8 text-center text-slate-400 font-medium">
+                            <i class="fa-solid fa-folder-open text-2xl block mb-2 opacity-50"></i>
+                            Belum ada rekapan sales harian yang diinput.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = dbSales.map(item => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3.5 px-4 font-semibold text-slate-700">${item.tanggalFormat}</td>
+                    <td class="py-3.5 px-4 text-right font-bold text-slate-900">${formatRupiah(item.nominal)}</td>
+                    <td class="py-3.5 px-4 text-center action-column">
+                        <button onclick="hapusSalesHarian(${item.id})" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg hover:bg-rose-50 transition cursor-pointer">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Memuat Parameter Konfigurasi Toko Terakhir
+        function muatKonfigurasiTerakhir() {
+            const configSaved = JSON.parse(localStorage.getItem('salesmon_config'));
+            if(configSaved) {
+                document.getElementById('input-target').value = configSaved.target || 350000000;
+                document.getElementById('input-target-gm').value = configSaved.targetGm || 20;
+                document.getElementById('input-aktual-gm').value = configSaved.aktualGm || 18.5;
+                document.getElementById('input-hari-total').value = configSaved.hariTotal || 30;
+            }
+        }
+
+        // Jalankan Aplikasi Saat Pertama Kali Dibuka
+        window.onload = function() {
+            initTanggal();
+            muatKonfigurasiTerakhir();
+            kalkulasiDashboard();
+        };
+    </script>
+</body>
+</html>
