@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesMon v8.0 - 1GCX SIMPANG MARTAPURA</title>
+    <title>SalesMon v9.0 - 1GCX SIMPANG MARTAPURA</title>
     
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- Web App Manifest -->
     <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Sales%20Monitoring%20Martapura%22,%22short_name%22:%22SalesMon%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3222/3222675.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
-    <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -39,7 +37,6 @@
 
     <div class="flex h-screen overflow-hidden main-content-wrapper">
         
-        <!-- SIDEBAR -->
         <aside class="w-64 bg-slate-900 text-white p-6 hidden md:flex flex-col justify-between non-printable">
             <div>
                 <div class="flex items-center space-x-3 mb-10">
@@ -62,10 +59,8 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
         <div class="flex-1 flex flex-col overflow-y-auto main-content-wrapper">
             
-            <!-- HEADER -->
             <header class="bg-white shadow-sm px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 non-printable">
                 <div class="flex items-center gap-4">
                     <a href="index.html" class="md:hidden bg-slate-100 p-2.5 rounded-xl text-slate-700 hover:bg-slate-200 transition">
@@ -84,7 +79,6 @@
                 </div>
             </header>
 
-            <!-- DASHBOARD CONTENT -->
             <main class="p-6 max-w-7xl w-full mx-auto space-y-6">
                 
                 <div class="printable-only bg-slate-900 text-white p-5 rounded-2xl mb-6">
@@ -95,10 +89,8 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    <!-- LEFT COLUMN: INPUT PANELS -->
                     <div class="lg:col-span-1 space-y-6 non-printable input-panel-box">
                         
-                        <!-- PANEL 1: TARGET BULANAN SEKARANG -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                             <div class="flex justify-between items-center border-b border-slate-100 pb-2">
                                 <h2 class="text-md font-bold text-slate-700">
@@ -132,7 +124,6 @@
                             </div>
                         </div>
 
-                        <!-- PANEL 2: INPUT SALES HARIAN -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                             <div class="border-b border-slate-100 pb-2">
                                 <h2 class="text-md font-bold text-slate-700">
@@ -152,7 +143,20 @@
                             </button>
                         </div>
 
-                        <!-- PANEL 3: SISTEM TUTUP BUKU BULANAN -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-3 shadow-sm">
+                            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-share-nodes text-emerald-600"></i> Integrasi Laporan
+                            </h3>
+                            
+                            <button onclick="kirimRekapWhatsApp()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 px-4 rounded-xl text-sm transition cursor-pointer shadow-sm flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> SHARE REKAP KE WHATSAPP
+                            </button>
+
+                            <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-4 rounded-xl transition cursor-pointer text-xs text-center flex items-center justify-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-print text-amber-400"></i> Cetak Laporan / PDF
+                            </button>
+                        </div>
+
                         <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 space-y-3">
                             <h3 class="text-sm font-black text-amber-800 uppercase tracking-wide flex items-center gap-1.5">
                                 <i class="fa-solid fa-lock"></i> Manajemen Akhir Bulan
@@ -163,25 +167,17 @@
                             </button>
                         </div>
 
-                        <!-- RESET DATA DEMO -->
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                             <button onclick="resetKeDataAwal()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 px-4 rounded-xl transition cursor-pointer text-xs text-center block">
                                 <i class="fa-solid fa-rotate-left mr-1"></i> Inject Ulang Data Gambar 1-16 Juni
                             </button>
                         </div>
 
-                        <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-xl transition cursor-pointer text-center block shadow-md">
-                            <i class="fa-solid fa-print mr-2 text-amber-400"></i>Cetak Laporan / PDF
-                        </button>
-
                     </div>
 
-                    <!-- RIGHT COLUMN: DASHBOARD CARDS, HISTORY, & TABLES -->
                     <div class="lg:col-span-2 space-y-6">
                         
-                        <!-- SUMMARY CARDS GRID -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 cards-container-area">
-                            <!-- TARGET TOTAL BULANAN -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Target (<span class="target-label-bulan">Bulan Ini</span>)</p>
@@ -190,7 +186,6 @@
                                 <div class="p-4 bg-blue-50 text-blue-600 rounded-xl non-printable"><i class="fa-solid fa-bullseye text-2xl"></i></div>
                             </div>
 
-                            <!-- AKTUAL SALES -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Actual Sales</p>
@@ -200,7 +195,6 @@
                                 <div class="p-4 bg-emerald-50 text-emerald-600 rounded-xl non-printable"><i class="fa-solid fa-cash-register text-2xl"></i></div>
                             </div>
 
-                            <!-- GROSS MARGIN -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between sm:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-md card-print-style card-dark-print-style">
                                 <div class="space-y-1 w-full">
                                     <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Gross Margin (GM%) Performance</p>
@@ -213,7 +207,6 @@
                                 <div class="p-4 bg-slate-800 text-emerald-400 rounded-xl border border-slate-700 non-printable"><i class="fa-solid fa-percent text-xl"></i></div>
                             </div>
 
-                            <!-- RATA-RATA SALES -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Rataan / Hari (<span id="text-hari-lewat">0</span> Hari)</p>
@@ -222,7 +215,6 @@
                                 <div class="p-4 bg-sky-50 text-sky-600 rounded-xl non-printable"><i class="fa-solid fa-calculator text-2xl"></i></div>
                             </div>
 
-                            <!-- KEKURANGAN TARGET -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Sisa Kekurangan</p>
@@ -232,7 +224,6 @@
                                 <div class="p-4 bg-rose-50 text-rose-600 rounded-xl non-printable"><i class="fa-solid fa-layer-group text-2xl"></i></div>
                             </div>
 
-                            <!-- BEBAN SISA HARI -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between sm:col-span-2 border-l-4 border-l-indigo-500 card-print-style">
                                 <div>
                                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Beban Wajib Harian (<span id="text-hari-sisa">0</span> Hari Sisa)</p>
@@ -241,7 +232,6 @@
                                 <div class="p-4 bg-indigo-50 text-indigo-600 rounded-xl non-printable"><i class="fa-solid fa-hourglass-half text-2xl"></i></div>
                             </div>
 
-                            <!-- PROGRESS BAR -->
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 sm:col-span-2 card-print-style" style="display: block !important;">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sales Achievement Progress</span>
@@ -253,7 +243,6 @@
                             </div>
                         </div>
 
-                        <!-- PANEL BOX 4: BOX HISTORY DATA BULANAN -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 non-printable">
                             <h3 class="text-lg font-black text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
                                 <i class="fa-solid fa-folder-closed text-amber-500"></i>
@@ -272,13 +261,11 @@
                                         </tr>
                                     </thead>
                                     <tbody id="history-table-body" class="divide-y divide-slate-100 font-medium">
-                                        <!-- Data History Masuk Sini -->
-                                    </tbody>
+                                        </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- REKAPAN TABLE HARIAN BULAN SEKARANG -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
                                 <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
@@ -297,8 +284,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="sales-table-body" class="divide-y divide-slate-100">
-                                        <!-- Diisi Javascript -->
-                                    </tbody>
+                                        </tbody>
                                 </table>
                             </div>
                         </div>
@@ -449,6 +435,62 @@
             }
         }
 
+        // FUNGSI LOGIC KIRIM WHATSAPP DENGAN SUSUNAN TEKS RAPI
+        function kirimRekapWhatsApp() {
+            const namaBulan = document.getElementById('input-nama-bulan').value || "Bulan Ini";
+            const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
+            const targetGm = parseFloat(document.getElementById('input-target-gm').value) || 0;
+            const aktualGm = parseFloat(document.getElementById('input-aktual-gm').value) || 0;
+            const hariTotal = parseInt(document.getElementById('input-hari-total').value) || 1;
+
+            const totalAktualSales = dbSales.reduce((sum, item) => sum + item.nominal, 0);
+            const hariLewat = dbSales.length;
+            const hariSisa = Math.max(0, hariTotal - hariLewat);
+            const varianceGm = aktualGm - targetGm;
+            const rataHari = hariLewat > 0 ? totalAktualSales / hariLewat : 0;
+            const selisihKekurangan = Math.max(0, targetTotal - totalAktualSales);
+            const persenAktual = targetTotal > 0 ? (totalAktualSales / targetTotal) * 100 : 0;
+            const bebanHarianSisa = hariSisa > 0 ? selisihKekurangan / hariSisa : 0;
+
+            // Template teks rapi dengan Emoji WhatsApp format bintang (*) untuk bold
+            let teksWA = `*LAPORAN KINERJA SALESMON - 1GCX SIMPANG MARTAPURA*\n`;
+            teksWA += `Periode Laporan: *${namaBulan}*\n`;
+            teksWA += `Tanggal Cetak: ${document.getElementById('current-date').innerText}\n`;
+            teksWA += `-------------------------------------------\n\n`;
+            
+            teksWA += `🎯 *TARGET & ACTUAL SALES*\n`;
+            teksWA += `• Target Bulanan: *${formatRupiah(targetTotal)}*\n`;
+            teksWA += `• Realisasi Sales: *${formatRupiah(totalAktualSales)}*\n`;
+            teksWA += `• Achievement: *${persenAktual.toFixed(1)}%*\n\n`;
+
+            teksWA += `📈 *PERFORMA GROSS MARGIN (GM)*\n`;
+            teksWA += `• Target GM: ${targetGm.toFixed(2)}%\n`;
+            teksWA += `• Realisasi GM: *${aktualGm.toFixed(2)}%*\n`;
+            teksWA += `• Variance GM: *${varianceGm >= 0 ? '+' : ''}${varianceGm.toFixed(2)}%* ${varianceGm >= 0 ? '✅' : '❌'}\n\n`;
+
+            teksWA += `🗓️ *ANALISIS HARI KERJA*\n`;
+            teksWA += `• Hari Berjalan: ${hariLewat} dari ${hariTotal} Hari\n`;
+            teksWA += `• Rataan Sales/Hari: *${formatRupiah(rataHari)}*\n`;
+            teksWA += `• Sisa Hari Kerja: ${hariSisa} Hari Lagi\n\n`;
+
+            teksWA += `🚨 *KEKURANGAN & BEBAN BEBAN*\n`;
+            teksWA += `• Sisa Minus Target: *${formatRupiah(selisihKekurangan)}*\n`;
+            teksWA += `• Wajib Kejar per Hari: *${formatRupiah(bebanHarianSisa)}*\n\n`;
+            
+            teksWA += `_Generated otomatis via SalesMon System v9.0_`;
+
+            // Proses Copy ke Clipboard HP
+            navigator.clipboard.writeText(teksWA).then(() => {
+                // Setelah disalin, langsung redirect/oper ke aplikasi WhatsApp
+                const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
+                window.open(linkWhatsApp, '_blank');
+            }).catch(err => {
+                // Fallback jika permission browser ditolak, jalankan direct link saja
+                const linkWhatsApp = `https://api.whatsapp.com/send?text=${encodeURIComponent(teksWA)}`;
+                window.open(linkWhatsApp, '_blank');
+            });
+        }
+
         // FUNGSI ARSIP AKHIR BULAN (TUTUP BUKU)
         function tutupBukuBulanan() {
             const namaBulan = document.getElementById('input-nama-bulan').value.trim();
@@ -464,7 +506,6 @@
 
             if(confirm(`Apakah Anda yakin ingin menutup pembukuan periode "${namaBulan}"?\n\nData total sales akan dipindahkan ke list HISTORY PERMANEN, dan tabel harian akan dikosongkan untuk bulan baru.`)) {
                 
-                // Masukkan ke database history
                 dbHistory.push({
                     id: Date.now(),
                     bulan: namaBulan,
@@ -474,12 +515,10 @@
                     gm: aktualGm
                 });
 
-                // Simpan history & Kosongkan database utama untuk bulan baru
                 localStorage.setItem('salesmon_history', JSON.stringify(dbHistory));
                 dbSales = []; 
                 localStorage.setItem('salesmon_db', JSON.stringify(dbSales));
 
-                // Otomatis geser nama bulan di form agar user tinggal ganti dikit
                 document.getElementById('input-nama-bulan').value = "Bulan Baru";
                 
                 alert("Bulan Berhasil Ditutup! Data lama tersimpan aman di tabel history bawah.");
