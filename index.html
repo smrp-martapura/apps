@@ -3,108 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMRP Martapura - Super App</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background-color: #0056b3;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-            flex: 1;
-        }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        .menu-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            border-top: 5px solid #0056b3;
-        }
-        .menu-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        .menu-card h2 {
-            margin-bottom: 15px;
-            color: #0056b3;
-        }
-        .menu-card p {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.5;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #222;
-            color: white;
-            font-size: 14px;
-        }
-    </style>
+    <title>SMRP MARTAPURA SUPER APP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-slate-50 font-sans text-slate-800 min-h-screen">
 
-    <header>
-        <h1>SMRP MARTAPURA SUPER APP</h1>
-        <p>Satu Aplikasi untuk Semua Kebutuhan Operasional</p>
+    <header class="bg-blue-700 text-white py-8 px-4 text-center shadow-md">
+        <h1 class="text-2xl sm:text-3xl font-black tracking-wide uppercase">SMRP MARTAPURA SUPER APP</h1>
+        <p class="text-sm text-blue-100 mt-2 font-medium">Satu Aplikasi untuk Semua Kebutuhan Operasional</p>
     </header>
 
-    <div class="container">
-        <div class="menu-grid">
-            
-            <div class="menu-card" onclick="bukaMenu('list_rh.html')">
-                <h2>📋 ListRH</h2>
-                <p>Akses data dan pengelolaan administrasi ListRH secara terpusat.</p>
+    <main class="flex-1 max-w-xl w-full mx-auto p-6 space-y-6">
+
+        <!-- Tombol List RH -->
+        <a href="list_rh.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-blue-600 hover:shadow-md transition">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-clipboard-list text-2xl w-8"></i></div>
+                <div>
+                    <h2 class="text-xl font-bold">ListRH</h2>
+                    <p class="text-sm text-slate-500">Akses data administrasi ListRH.</p>
+                </div>
             </div>
+        </a>
 
-            <div class="menu-card" onclick="bukaMenu('fokus_mkt.html')" style="border-top-color: #28a745;">
-                <h2 style="color: #28a745;">🎯 Fokus Marketing</h2>
-                <p>Pantau program promosi toko, target marketing, dan layout display.</p>
+        <!-- Tombol Fokus Marketing -->
+        <a href="fokus_mkt.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-emerald-600 hover:shadow-md transition">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-bullseye text-2xl w-8"></i></div>
+                <div>
+                    <h2 class="text-xl font-bold">Fokus Marketing</h2>
+                    <p class="text-sm text-slate-500">Pantau program promosi dan target.</p>
+                </div>
             </div>
+        </a>
 
-            <div class="menu-card" onclick="bukaMenu('ikt.html')" style="border-top-color: #dc3545;">
-                <h2 style="color: #dc3545;">📊 IKT</h2>
-                <p>Laporan performa, indikator kerja, dan pencapaian operasional.</p>
+        <!-- Tombol IKT / Sales Monitoring (Menuju salesmon.html) -->
+        <a href="salesmon.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-rose-600 hover:shadow-md transition">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-rose-50 text-rose-600 rounded-xl"><i class="fa-solid fa-chart-simple text-2xl w-8"></i></div>
+                <div>
+                    <h2 class="text-xl font-bold">IKT & Sales Monitoring</h2>
+                    <p class="text-sm text-slate-500">Laporan performa dan pencapaian sales.</p>
+                </div>
             </div>
+        </a>
 
-        </div>
-    </div>
-
-    <footer>
-        &copy; 2026 SMRP Martapura. All Rights Reserved.
-    </footer>
-
-    <script>
-        function bukaMenu(halaman) {
-            // Fungsi ini akan mengalihkan halaman sesuai menu yang diklik
-            window.location.href = halaman;
-        }
-    </script>
+    </main>
 </body>
 </html>
