@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalesMon v9.6 (Fix GM Sync) - 1GCX SIMPANG MARTAPURA</title>
+    <title>SalesMon v9.6 (Clean Sync) - 1GCX SIMPANG MARTAPURA</title>
     
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -170,7 +170,7 @@
 
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                             <button onclick="resetKeDataAwalFirebase()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 px-4 rounded-xl transition cursor-pointer text-xs text-center block">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Inject Ulang Data Gambar 1-16 Juni
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset Total & Bersihkan Database
                             </button>
                         </div>
 
@@ -298,7 +298,14 @@
 
     <script>
         const firebaseConfig = {
-            databaseURL: "https://smrp-martapura-app-default-rtdb.asia-southeast1.firebasedatabase.app/" 
+            apiKey: "AIzaSyCLyqeyjuftUE_0XHEO2_LZbTyQGlRAqrM",
+            authDomain: "smrp-martapura-app.firebaseapp.com",
+            databaseURL: "https://smrp-martapura-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smrp-martapura-app",
+            storageBucket: "smrp-martapura-app.firebasestorage.app",
+            messagingSenderId: "772741424585",
+            appId: "1:772741424585:web:3a098d8fd6023d172e3418",
+            measurementId: "G-BS19RWF3GX"
         };
         
         if (!firebase.apps.length) {
@@ -306,29 +313,9 @@
         }
         const db = firebase.database();
 
-        // Data Source Master Cadangan (Demo)
-        const dataGambarJuni = [
-            { tanggalAsli: "2026-06-01", tanggalFormat: "Senin, 1 Jun 2026", nominal: 14390288 },
-            { tanggalAsli: "2026-06-02", tanggalFormat: "Selasa, 2 Jun 2026", nominal: 11837958 },
-            { tanggalAsli: "2026-06-03", tanggalFormat: "Rabu, 3 Jun 2026", nominal: 12652332 },
-            { tanggalAsli: "2026-06-04", tanggalFormat: "Kamis, 4 Jun 2026", nominal: 11187132 },
-            { tanggalAsli: "2026-06-05", tanggalFormat: "Jumat, 5 Jun 2026", nominal: 12830657 },
-            { tanggalAsli: "2026-06-06", tanggalFormat: "Sabtu, 6 Jun 2026", nominal: 15285034 },
-            { tanggalAsli: "2026-06-07", tanggalFormat: "Minggu, 7 Jun 2026", nominal: 12155521 },
-            { tanggalAsli: "2026-06-08", tanggalFormat: "Senin, 8 Jun 2026", nominal: 12423737 },
-            { tanggalAsli: "2026-06-09", tanggalFormat: "Selasa, 9 Jun 2026", nominal: 14326831 },
-            { tanggalAsli: "2026-06-10", tanggalFormat: "Rabu, 10 Jun 2026", nominal: 11558707 },
-            { tanggalAsli: "2026-06-11", tanggalFormat: "Kamis, 11 Jun 2026", nominal: 7756412 },
-            { tanggalAsli: "2026-06-12", stroke: "Jumat", tanggalFormat: "Jumat, 12 Jun 2026", nominal: 13132980 },
-            { tanggalAsli: "2026-06-13", tanggalFormat: "Sabtu, 13 Jun 2026", nominal: 15639422 },
-            { tanggalAsli: "2026-06-14", tanggalFormat: "Minggu, 14 Jun 2026", nominal: 12800553 },
-            { tanggalAsli: "2026-06-15", tanggalFormat: "Senin, 15 Jun 2026", nominal: 14280840 },
-            { tanggalAsli: "2026-06-16", tanggalFormat: "Selasa, 16 Jun 2026", nominal: 12187766 }
-        ];
-
         let dbSales = [];
         let dbHistory = [];
-        let isListening = true; // Kunci pengaman anti-reset ketikan
+        let isListening = true; 
 
         function initTanggal() {
             const sekarang = new Date();
@@ -372,11 +359,8 @@
             }
         }
 
-        // =========================================================
-        // LISTENERS SINKRONISASI CLOUD (ANTI-RESET CORES)
-        // =========================================================
         db.ref('salesmon_config').on('value', (snapshot) => {
-            if (!isListening) return; // Mengunci data, dilarang menimpa jika user sedang mengetik!
+            if (!isListening) return; 
             const data = snapshot.val();
             if (data) {
                 document.getElementById('input-nama-bulan').value = data.namaBulan !== undefined ? data.namaBulan : "Juni 2026";
@@ -417,11 +401,8 @@
             renderTabelHistory();
         });
 
-        // ==========================================
-        // FITUR UPDATE REALTIME KE FIREBASE
-        // ==========================================
         function updateConfigKeFirebase() {
-            isListening = false; // Kunci dimatikan agar Firebase tidak mereset input saat user mengetik desimal
+            isListening = false; 
 
             const namaBulan = document.getElementById('input-nama-bulan').value || "Bulan Ini";
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
@@ -443,7 +424,7 @@
                 if (!error) {
                     picuStatusSimpan();
                 }
-                isListening = true; // Hidupkan kembali keran sync setelah cloud aman terupdate
+                isListening = true; 
             });
 
             kalkulasiLokalDashboard();
@@ -475,6 +456,10 @@
             });
         }
 
+        function htmlEscape(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
         function hapusSalesHarianFirebase(id) {
             if(confirm("Hapus permanen baris penjualan ini?")) {
                 db.ref('salesmon_db').child(id).remove((err) => {
@@ -484,7 +469,6 @@
         }
 
         function kalkulasiLokalDashboard() {
-            // Membaca input secara dinamis tanpa menunggu cloud
             const namaBulan = document.getElementById('input-nama-bulan').value || "Bulan Ini";
             const targetTotal = parseFloat(document.getElementById('input-target').value) || 0;
             const targetGm = parseFloat(document.getElementById('input-target-gm').value) || 0;
@@ -508,7 +492,6 @@
             document.getElementById('card-aktual').innerText = formatRupiah(totalAktualSales);
             document.getElementById('badge-persen-aktual').innerText = `${persenAktual.toFixed(1)}%`;
             
-            // FIX UTAMA: Card mengambil variabel targetGm desimal dari input langsung
             document.getElementById('card-target-gm').innerText = `${targetGm.toFixed(2)}%`;
             document.getElementById('card-aktual-gm').innerText = `${aktualGm.toFixed(2)}%`;
             
@@ -528,27 +511,20 @@
             renderTabelHarian();
         }
 
+        // FIX UTAMA: Fungsi reset sekarang benar-benar mengosongkan tabel harian tanpa isi data demo lagi
         function resetKeDataAwalFirebase() {
-            if(confirm("Apakah Anda ingin menimpa data Firebase dengan data demo 1-16 Juni?")) {
+            if(confirm("Apakah Anda yakin ingin RESET TOTAL dan menghapus seluruh rekapan sales harian saat ini?")) {
                 db.ref('salesmon_db').set(null).then(() => {
-                    dataGambarJuni.forEach(item => {
-                        db.ref('salesmon_db').push({
-                            tanggalAsli: item.tanggalAsli,
-                            tanggalFormat: item.tanggalFormat,
-                            nominal: item.nominal
-                        });
-                    });
-                    
                     const initConfig = {
                         namaBulan: "Juni 2026",
                         target: 350000000,
                         targetGm: 20,
-                        aktualGm: 18.5,
+                        aktualGm: 0,
                         hariTotal: 30
                     };
                     db.ref('salesmon_config').set(initConfig);
                     localStorage.setItem('salesmon_lock_config', JSON.stringify(initConfig));
-                    alert("Sukses injeksi data demo!");
+                    alert("Database berhasil dibersihkan! Mulai dari nol.");
                 });
             }
         }
