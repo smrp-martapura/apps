@@ -684,6 +684,247 @@
     }
 
     window.resetFormKasir = function() {
+<!-- Library SDK Firebase Cloud Terintegrasi -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, off, push, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    // Konfigurasi Akun Firebase Anda (SUDAH DISINKRONKAN DENGAN SMRP-MARTAPURA-APP)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLyqeyjuftUE_0XHEO2_LZbTyQGlRAqrM",
+        authDomain: "smrp-martapura-app.firebaseapp.com",
+        databaseURL: "https://smrp-martapura-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smrp-martapura-app",
+        storageBucket: "smrp-martapura-app.firebasestorage.app",
+        messagingSenderId: "772741424585",
+        appId: "1:772741424585:web:3a098d8fd6023d172e3418",
+        measurementId: "G-BS19RWF3GX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let currentKasirRef = null;
+
+    // --- SINKRONISASI 1: ENGINE TABEL MKT ---
+    window.pushDataMktFirebase = function() {
+        document.getElementById('cloudStatusMkt').innerText = "Cloud Sync: Menyimpan...";
+        let dataMkt = {
+            toko: document.getElementById('toko').value,
+            nama: document.getElementById('nama').value,
+            nik: document.getElementById('nik').value,
+            rows: {}
+        };
+
+        document.querySelectorAll('.mkt-row').forEach(row => {
+            const name = row.getAttribute('data-name');
+            dataMkt.rows[name] = {
+                target: row.querySelector('.target').value,
+                actual: row.querySelector('.actual').value
+            };
+        });
+
+        set(ref(db, 'laporan_mkt/mkt_current'), dataMkt)
+        .then(() => { document.getElementById('cloudStatusMkt').innerText = "Cloud Sync: Tersinkronisasi ✅"; })
+        .catch(() => { document.getElementById('cloudStatusMkt').innerText = "Cloud Sync: Gagal ❌"; });
+    }
+
+    onValue(ref(db, 'laporan_mkt/mkt_current'), (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        if(data.toko !== undefined) document.getElementById('toko').value = data.toko;
+        if(data.nama !== undefined) document.getElementById('nama').value = data.nama;
+        if(data.nik !== undefined) document.getElementById('nik').value = data.nik;
+
+        if(data.rows) {
+            document.querySelectorAll('.mkt-row').forEach(row => {
+                const name = row.getAttribute('data-name');
+                if(data.rows[name]) {
+                    row.querySelector('.target').value = data.rows[name].target || "";
+                    row.querySelector('.actual').value = data.rows[name].actual || "";
+                }
+            });
+        }
+        hitungSemuaPersenMkt();
+    });
+
+    // --- ENGINE HITUNG OTOMATIS MKT ---
+    window.jalankanUbahMkt = function(el) {
+        const row = el.closest('.mkt-row');
+        const tgt = parseFloat(row.querySelector('.target').value) || 0;
+        const akt = parseFloat(row.querySelector('.actual').value) || 0;
+        const cellPersen = row.querySelector('.text-persen');
+
+        if(tgt > 0) {
+            const hasil = Math.round((akt / tgt) * 100);
+            cellPersen.innerText = hasil + "%";
+            if(hasil < 50) cellPersen.style.color = "#ef4444";
+            else if(hasil < 70) cellPersen.style.color = "#f59e0b";
+            else cellPersen.style.color = "#10b981";
+        } else {
+            cellPersen.innerText = "-";
+            cellPersen.style.color = "var(--text-main)";
+        }
+        pushDataMktFirebase();
+    }
+
+    function hitungSemuaPersenMkt() {
+        document.querySelectorAll('.mkt-row').forEach(row => {
+            const tgt = parseFloat(row.querySelector('.target').value) || 0;
+            const akt = parseFloat(row.querySelector('.actual').value) || 0;
+            const cellPersen = row.querySelector('.text-persen');
+            if(tgt > 0) {
+                const hasil = Math.round((akt / tgt) * 100);
+                cellPersen.innerText = hasil + "%";
+                if(hasil < 50) cellPersen.style.color = "#ef4444";
+                else if(hasil < 70) cellPersen.style.color = "#f59e0b";
+                else cellPersen.style.color = "#10b981";
+            } else {
+                cellPersen.innerText = "-";
+                cellPersen.style.color = "var(--text-main)";
+            }
+        });
+    }
+
+    // --- TOMBOL SALIN REKAP MKT DENGAN FORMAT BARU WHATSAPP ---
+    window.copyLaporanMKT = function() {
+        const toko = document.getElementById('toko').value;
+        const nama = document.getElementById('nama').value;
+        const nik = document.getElementById('nik').value;
+
+        let dataItem = {};
+        document.querySelectorAll('.mkt-row').forEach(row => {
+            const name = row.getAttribute('data-name');
+            const tgt = row.querySelector('.target').value;
+            const akt = row.querySelector('.actual').value;
+            const pct = row.querySelector('.text-persen').innerText;
+
+            if (name === "Cashback" || name === "Voucher") {
+                dataItem[name] = akt ? `${tgt}/${akt}/${pct}` : "";
+            } else {
+                dataItem[name] = `${tgt || 0}/${akt || 0}/${pct === '-' ? '0%' : pct}`;
+            }
+        });
+
+        let teksWA = `Laporan fokus MKT dengan Format,,\n\n`;
+        teksWA += `Toko : ${toko}\n`;
+        teksWA += `Nama : ${nama}\n`;
+        teksWA += `Nik : ${nik}\n\n`;
+        teksWA += `PSM : ${dataItem['PSM']}\n`;
+        teksWA += `PWP : ${dataItem['PWP']}\n`;
+        teksWA += `Serba : ${dataItem['Serba']}\n`;
+        teksWA += `Suueger : ${dataItem['Suueger']}\n`;
+        teksWA += `Cashback : ${dataItem['Cashback']}\n`;
+        teksWA += `Voucher : ${dataItem['Voucher']}\n\n`;
+        teksWA += `Terima Kasih`;
+
+        navigator.clipboard.writeText(teksWA).then(() => {
+            const notif = document.getElementById('notifMkt');
+            notif.style.display = "block";
+            setTimeout(() => { notif.style.display = "none"; }, 3500);
+
+            push(ref(db, 'laporan_mkt/mkt_history'), {
+                timestamp: new Date().toLocaleString('id-ID'),
+                toko: toko, nama: nama, nik: nik,
+                psm: dataItem['PSM'], pwp: dataItem['PWP'], 
+                serba: dataItem['Serba'], suueger: dataItem['Suueger']
+            });
+        });
+    }
+
+
+    // --- SINKRONISASI 2: ENGINE KASIR FOKUS PSM ---
+    const daftarKasir = {
+        "26014513": "Mudza",
+        "26014456": "Sholahudin",
+        "26012274": "Shinta"
+    };
+
+    window.autoFillKasirNama = function() {
+        const nikSelected = document.getElementById('kasirNik').value;
+        document.getElementById('kasirNama').value = daftarKasir[nikSelected] || "";
+    }
+
+    window.switchKasirByNik = function() {
+        if(currentKasirRef) off(currentKasirRef);
+        const nikSelected = document.getElementById('kasirNik').value;
+        document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Mengambil Data Kasir...";
+
+        currentKasirRef = ref(db, `laporan_kasir/kasir_current/${nikSelected}`);
+        onValue(currentKasirRef, (snapshot) => {
+            const data = snapshot.val();
+            resetViewTabelKasir();
+            
+            if(data) {
+                if(data.week !== undefined) document.getElementById('kasirWeek').value = data.week;
+                if(data.tanggal !== undefined) document.getElementById('kasirTanggal').value = data.tanggal;
+                if(data.toko !== undefined) document.getElementById('kasirToko').value = data.toko;
+                
+                if(data.rows) {
+                    Object.keys(data.rows).forEach(idx => {
+                        const rowEl = document.querySelector(`.kasir-row[data-index="${idx}"]`);
+                        if(rowEl) {
+                            rowEl.querySelector('.deskripsi').value = data.rows[idx].deskripsi || "";
+                            rowEl.querySelector('.target-k').value = data.rows[idx].target || "";
+                            rowEl.querySelector('.actual-k').value = data.rows[idx].actual || "";
+                        }
+                    });
+                }
+            }
+            hitungSemuaHutangKasir();
+            document.getElementById('cloudStatusKasir').innerText = "Cloud Sync: Sinkron Karyawan (" + nikSelected + ") ✅";
+        });
+    }
+
+    window.pushDataKasirFirebase = function() {
+        const nikSelected = document.getElementById('kasirNik').value;
+        let dataKasir = {
+            week: document.getElementById('kasirWeek').value,
+            tanggal: document.getElementById('kasirTanggal').value,
+            toko: document.getElementById('kasirToko').value,
+            nama: document.getElementById('kasirNama').value,
+            rows: {}
+        };
+
+        document.querySelectorAll('.kasir-row').forEach(row => {
+            const idx = row.getAttribute('data-index');
+            dataKasir.rows[idx] = {
+                deskripsi: row.querySelector('.deskripsi').value,
+                target: row.querySelector('.target-k').value,
+                actual: row.querySelector('.actual-k').value
+            };
+        });
+
+        set(ref(db, `laporan_kasir/kasir_current/${nikSelected}`), dataKasir);
+    }
+
+    window.jalankanUbahKasir = function(el) {
+        const row = el.closest('.kasir-row');
+        const tgt = parseFloat(row.querySelector('.target-k').value) || 0;
+        const akt = parseFloat(row.querySelector('.actual-k').value) || 0;
+        row.querySelector('.text-hutang').innerText = (tgt - akt);
+        pushDataKasirFirebase();
+    }
+
+    function hitungSemuaHutangKasir() {
+        document.querySelectorAll('.kasir-row').forEach(row => {
+            const tgt = parseFloat(row.querySelector('.target-k').value) || 0;
+            const akt = parseFloat(row.querySelector('.actual-k').value) || 0;
+            row.querySelector('.text-hutang').innerText = (tgt - akt);
+        });
+    }
+
+    function resetViewTabelKasir() {
+        document.querySelectorAll('.kasir-row').forEach(row => {
+            row.querySelector('.deskripsi').value = "";
+            row.querySelector('.target-k').value = "";
+            row.querySelector('.actual-k').value = "";
+            row.querySelector('.text-hutang').innerText = "0";
+        });
+    }
+
+    window.resetFormKasir = function() {
         if(confirm("Apakah Anda yakin ingin mengosongkan tabel input kasir ini?")) {
             resetViewTabelKasir();
             pushDataKasirFirebase();
@@ -736,7 +977,7 @@
             notif.style.display = "block";
             setTimeout(() => { notif.style.display = "none"; }, 3500);
 
-            push(ref(db, 'kasir_history/'), {
+            push(ref(db, 'laporan_kasir/kasir_history'), {
                 timestamp: new Date().toLocaleString('id-ID'),
                 profil: `${nama} (${nik})`,
                 week: week,
@@ -747,7 +988,7 @@
 
 
     // --- DISPLAY DATABASE HISTORY SYNC LOGS ---
-    onValue(ref(db, 'mkt_history/'), (snapshot) => {
+    onValue(ref(db, 'laporan_mkt/mkt_history'), (snapshot) => {
         const body = document.getElementById('historyMktBody');
         body.innerHTML = "";
         const data = snapshot.val();
@@ -762,12 +1003,12 @@
                     <td style="text-align:center; font-weight:500;">${item.pwp || '-'}</td>
                     <td style="text-align:center; font-weight:500;">${item.serba || '-'}</td>
                     <td style="text-align:center; font-weight:500;">${item.suueger || '-'}</td>
-                    <td style="text-align:center;"><button class="btn-clear-row" onclick="hapusHistoryRow('mkt_history','${key}')">❌</button></td>
+                    <td style="text-align:center;"><button class="btn-clear-row" onclick="hapusHistoryRow('laporan_mkt/mkt_history','${key}')">❌</button></td>
                 </tr>`;
         });
     });
 
-    onValue(ref(db, 'kasir_history/'), (snapshot) => {
+    onValue(ref(db, 'laporan_kasir/kasir_history'), (snapshot) => {
         const body = document.getElementById('historyKasirBody');
         body.innerHTML = "";
         const data = snapshot.val();
@@ -779,14 +1020,14 @@
                 <tr>
                     <td><span class="timestamp">${item.timestamp}</span><br><strong>${item.profil}</strong><br>Week: ${item.week}</td>
                     <td style="color:#0f766e; font-weight:500; line-height:1.4;">${item.detail}</td>
-                    <td style="text-align:center;"><button class="btn-clear-row" onclick="hapusHistoryRow('kasir_history','${key}')">❌</button></td>
+                    <td style="text-align:center;"><button class="btn-clear-row" onclick="hapusHistoryRow('laporan_kasir/kasir_history','${key}')">❌</button></td>
                 </tr>`;
         });
     });
 
-    window.hapusHistoryRow = function(node, key) {
+    window.hapusHistoryRow = function(pathNode, key) {
         if(confirm("Hapus baris riwayat ini dari Cloud?")) {
-            remove(ref(db, `${node}/${key}`));
+            remove(ref(db, `${pathNode}/${key}`));
         }
     }
 
@@ -796,26 +1037,3 @@
     autoFillKasirNama();
     switchKasirByNik();
 </script>
-
-<!-- Logika Tambahan PWA Standalone App Banner -->
-<script>
-    let deferredPrompt;
-    const banner = document.getElementById('installBanner');
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        banner.style.display = 'flex';
-    });
-    document.getElementById('btnInstallApp').addEventListener('click', () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') { banner.style.display = 'none'; }
-                deferredPrompt = null;
-            });
-        }
-    });
-    window.addEventListener('appinstalled', () => { banner.style.display = 'none'; });
-</script>
-</body>
-</html>
