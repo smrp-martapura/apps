@@ -82,6 +82,32 @@
             gap: 10px;
             margin-bottom: 15px;
         }
+
+        /* Style Baru untuk Input Kotak Pencarian */
+        .search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .input-search {
+            width: 100%;
+            padding: 10px 12px 10px 35px;
+            border: 2px solid #34495e;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        .input-search-gudang {
+            border-color: #d35400 !important;
+        }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #7f8c8d;
+        }
         
         input, select, button {
             padding: 10px;
@@ -135,7 +161,7 @@
         .badge-toko { background-color: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
         .badge-gudang { background-color: #e67e22; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
 
-        /* Style Baru Untuk Panel Sortir */
+        /* Style Panel Sortir */
         .sort-panel {
             background: #f1f5f9;
             padding: 12px;
@@ -203,6 +229,12 @@
         <button class="btn-add" onclick="window.tambahItemToko()">Tambah Ke Toko</button>
     </div>
 
+    <!-- KOTAK PENCARIAN AREA TOKO -->
+    <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="toko_pencarian" class="input-search" placeholder="Cari nama barang di tabel toko..." oninput="window.filterTabelToko()">
+    </div>
+
     <div class="action-group">
         <button class="btn-copy" onclick="window.simpanDanSalinTokoWA()">📋 Simpan & Salin Semua Data Toko</button>
         <button class="btn-clear" onclick="window.hapusSemuaToko()">🗑️ Bersihkan Tabel Toko</button>
@@ -244,6 +276,12 @@
         <input type="date" id="gudang_tglExpired" required>
         <input type="number" id="gudang_qty" placeholder="Qty (Dos)" min="1" required>
         <button class="btn-add" style="background-color: #e67e22;" onclick="window.tambahItemGudang()">Tambah Ke Gudang</button>
+    </div>
+
+    <!-- KOTAK PENCARIAN AREA GUDANG -->
+    <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="gudang_pencarian" class="input-search input-search-gudang" placeholder="Cari nama barang di tabel gudang..." oninput="window.filterTabelGudang()">
     </div>
 
     <div class="action-group">
@@ -306,7 +344,7 @@
     </h2>
     <div id="cloudStatusRak" style="font-size: 11px; color: #64748b; text-align: right; margin-top: -35px; margin-bottom: 20px; font-style: italic;">Cloud Sync: Menghubungkan...</div>
 
-    <!-- PANEL TOMBOL SORTIR BARU -->
+    <!-- PANEL TOMBOL SORTIR -->
     <div class="sort-panel">
         <span class="sort-label">🔀 Sortir Rak Berdasarkan:</span>
         <button class="btn-sort active" id="sort_abjad" onclick="window.ubahMetodeSortir('abjad')">🔤 Nama Rak (A-Z)</button>
@@ -326,7 +364,6 @@
                 </tr>
             </thead>
             <tbody id="rakTableBody">
-                <!-- Data akan di-render dinamis oleh script Firebase di bawah melalui fungsi renderTabelRak -->
             </tbody>
         </table>
     </div>
@@ -370,7 +407,7 @@
     
     // VARIABEL GLOBAL SINKRONISASI MODUL PLANO RAK
     let masterPlanoData = {}; 
-    let metodeSortirPlano = 'abjad'; // Default pilihan sortir
+    let metodeSortirPlano = 'abjad'; 
     let sedangMemuatPlano = true;
 
     // List Master Awal Rak Toko Fisik
@@ -435,6 +472,42 @@
         kirimKeWA(teksWA);
     }
 
+    // --- ENGINE LIVE SEARCH / PENCARIAN REAL-TIME TOKO & GUDANG ---
+    window.filterTabelToko = function() {
+        const kataKunci = document.getElementById('toko_pencarian').value.toLowerCase();
+        const rows = document.querySelectorAll('#toko_tabelBody tr');
+        
+        rows.forEach(row => {
+            // Hindari memfilter baris kosong "Belum ada data"
+            if (row.cells.length < 2) return; 
+            const teksDeskripsi = row.cells[1].innerText.toLowerCase();
+            const teksKategori = row.cells[2].innerText.toLowerCase(); // Izinkan juga mencari berdasarkan tipe RH (misal: RH30)
+            
+            if (teksDeskripsi.includes(kataKunci) || teksKategori.includes(kataKunci)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    window.filterTabelGudang = function() {
+        const kataKunci = document.getElementById('gudang_pencarian').value.toLowerCase();
+        const rows = document.querySelectorAll('#gudang_tabelBody tr');
+        
+        rows.forEach(row => {
+            if (row.cells.length < 2) return;
+            const teksDeskripsi = row.cells[1].innerText.toLowerCase();
+            const teksKategori = row.cells[2].innerText.toLowerCase();
+            
+            if (teksDeskripsi.includes(kataKunci) || teksKategori.includes(kataKunci)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
     // --- LOGIKA EMIT DATA AREA TOKO ---
     onValue(tokoRef, (snapshot) => {
         const data = snapshot.val();
@@ -475,6 +548,8 @@
                     </tr>
                 `;
             });
+            // Jalankan filter ulang jika user sedang mengetik saat data awan terupdate
+            window.filterTabelToko();
         } else {
             window.localTokoArray = [];
             tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#999;">Belum ada data retur Toko.</td></tr>`;
@@ -563,6 +638,7 @@
                     </tr>
                 `;
             });
+            window.filterTabelGudang();
         } else {
             window.localGudangArray = [];
             tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#999;">Belum ada data retur Gudang.</td></tr>`;
@@ -675,31 +751,24 @@
     }
 
     // ================= LOGIKA INTERAKTIF STATUS PLANO RAK TOKO =================
-    
-    // Fungsi Mengubah Mode Sortir dari Klik Tombol UI
     window.ubahMetodeSortir = function(metode) {
         metodeSortirPlano = metode;
         
-        // Atur Kelas Active pada Tombol Visual
         document.querySelectorAll('.btn-sort').forEach(btn => btn.classList.remove('active'));
         if(metode === 'abjad') document.getElementById('sort_abjad').classList.add('active');
         if(metode === 'belum_plano') document.getElementById('sort_belum').classList.add('active');
         if(metode === 'sudah_plano') document.getElementById('sort_sudah').classList.add('active');
         if(metode === 'tanggal') document.getElementById('sort_tanggal').classList.add('active');
 
-        // Picu Gambar Ulang Tabel
         window.renderTabelRak();
     };
 
-    // Komponen Utama Pemrosesan & Penyusunan Struktur Tampilan Rak (Render Engine)
     window.renderTabelRak = function() {
         const tbody = document.getElementById('rakTableBody');
         tbody.innerHTML = '';
 
-        // 1. Buat Objek Gabungan Seluruh Data (Data Cloud + Master Awal Fisik Toko)
         let gabunganRak = [];
 
-        // Masukkan data dari Master Fisik Awal
         masterRakAwal.forEach((kode) => {
             const idAman = "rak_" + kode.replace(/[^a-zA-Z0-9]/g, "");
             const dataDariCloud = masterPlanoData[idAman] || {};
@@ -713,7 +782,6 @@
             });
         });
 
-        // Masukkan data tambahan baru dari Cloud yang tidak terdaftar di master fisik awal
         Object.keys(masterPlanoData).forEach((id) => {
             const sudahAda = gabunganRak.some(r => r.id === id);
             if (!sudahAda) {
@@ -728,7 +796,6 @@
             }
         });
 
-        // 2. Eksekusi Engine Algoritma Penyortiran Sesuai Opsi Tombol Terpilih
         if (metodeSortirPlano === 'abjad') {
             gabunganRak.sort((a, b) => a.namaKode.localeCompare(b.namaKode, undefined, {numeric: true, sensitivity: 'base'}));
         } else if (metodeSortirPlano === 'belum_plano') {
@@ -737,14 +804,12 @@
             gabunganRak.sort((a, b) => b.sudahPlano - a.sudahPlano || a.namaKode.localeCompare(b.namaKode));
         } else if (metodeSortirPlano === 'tanggal') {
             gabunganRak.sort((a, b) => {
-                // Dorong yang tidak punya tanggal ke paling bawah
                 if (!a.tanggalPlano) return 1;
                 if (!b.tanggalPlano) return -1;
                 return new Date(b.tanggalPlano) - new Date(a.tanggalPlano);
             });
         }
 
-        // 3. Proses Injeksi HTML ke dalam DOM Tabel
         gabunganRak.forEach((item) => {
             const checkedStatus = item.sudahPlano ? "checked" : "";
             const bgWarnaRow = item.sudahPlano ? "#f0fdf4" : "transparent";
@@ -766,7 +831,6 @@
         });
     };
 
-    // Fungsi Pengendali Penyimpanan Data Status Rak ke Firebase Realtime Database
     window.jalankanSimpanRak = function(idRak) {
         if (sedangMemuatPlano) return;
 
@@ -788,7 +852,6 @@
         .catch(() => { document.getElementById('cloudStatusRak').innerText = "Cloud Sync: Gagal Akses ❌"; });
     }
 
-    // Penambahan Kode Rak Kustom Baru Secara Realtime
     window.jalankanTambahRak = function() {
         const inputEl = document.getElementById('inputRakBaru');
         const kodeRakBaru = inputEl.value.trim().toUpperCase();
@@ -825,7 +888,6 @@
         sedangMemuatPlano = true;
         masterPlanoData = snapshot.val() || {};
         
-        // Panggil Engine Render untuk memproses data & pengurutan terkini
         window.renderTabelRak();
 
         document.getElementById('cloudStatusRak').innerText = "Cloud Sync: Terupdate dari Cloud ✅";
