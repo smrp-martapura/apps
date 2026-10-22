@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMRP MARTAPURA SUPER APP</title>
     
-    <!-- Meta Tags untuk PWA (Biar Bisa Jadi Aplikasi HP) -->
+    <!-- Meta Tags untuk PWA -->
     <meta name="theme-color" content="#1d4ed8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Satu Aplikasi untuk Semua Kebutuhan Operasional SMRP Martapura">
     
-    <!-- Manifest Data Terintegrasi (Ikon & Konfigurasi Aplikasi) -->
+    <!-- Manifest Data Terintegrasi -->
     <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22SMRP%20Martapura%20Super%20App%22,%22short_name%22:%22SMRP%20App%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%23f8fafc%22,%22theme_color%22:%22%231d4ed8%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3222/3222675.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
 
     <!-- HEADER UTAMA -->
     <header class="bg-blue-700 text-white py-8 px-4 text-center shadow-md">
@@ -25,9 +26,9 @@
         <p class="text-sm text-blue-100 mt-2 font-medium">Satu Aplikasi untuk Semua Kebutuhan Operasional</p>
     </header>
 
-    <!-- TOMBOL INSTALASI (Hanya muncul jika HP mendukung fitur instal langsung) -->
+    <!-- TOMBOL INSTALASI -->
     <div id="install-container" class="hidden max-w-xl w-full mx-auto px-6 pt-4">
-        <button id="btn-install" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition animate-bounce">
+        <button id="btn-install" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition animate-bounce">
             <i class="fa-solid fa-download"></i> INSTAL SMRP SUPER APP DI HP
         </button>
     </div>
@@ -36,9 +37,9 @@
     <main class="flex-1 max-w-xl w-full mx-auto p-6 space-y-6">
 
         <!-- Tombol List RH -->
-        <a href="list_rh.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-blue-600 hover:shadow-md transition">
+        <a href="list_rh.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-blue-600 hover:shadow-md active:scale-[0.98] transition">
             <div class="flex items-start space-x-4">
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-clipboard-list text-2xl w-8"></i></div>
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-clipboard-list text-2xl w-8 text-center"></i></div>
                 <div>
                     <h2 class="text-xl font-bold">ListRH</h2>
                     <p class="text-sm text-slate-500">Akses data administrasi ListRH.</p>
@@ -46,21 +47,10 @@
             </div>
         </a>
 
-        <!-- Tombol Fokus Marketing -->
-        <a href="fokus_mkt.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-emerald-600 hover:shadow-md transition">
-            <div class="flex items-start space-x-4">
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-bullseye text-2xl w-8"></i></div>
-                <div>
-                    <h2 class="text-xl font-bold">Fokus Marketing</h2>
-                    <p class="text-sm text-slate-500">Pantau program promosi dan target.</p>
-                </div>
-            </div>
-        </a>
-
         <!-- Tombol IKT / Sales Monitoring -->
-        <a href="salesmon.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-rose-600 hover:shadow-md transition">
+        <a href="salesmon.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-rose-600 hover:shadow-md active:scale-[0.98] transition">
             <div class="flex items-start space-x-4">
-                <div class="p-3 bg-rose-50 text-rose-600 rounded-xl"><i class="fa-solid fa-chart-simple text-2xl w-8"></i></div>
+                <div class="p-3 bg-rose-50 text-rose-600 rounded-xl"><i class="fa-solid fa-chart-simple text-2xl w-8 text-center"></i></div>
                 <div>
                     <h2 class="text-xl font-bold">IKT & Sales Monitoring</h2>
                     <p class="text-sm text-slate-500">Laporan performa dan pencapaian sales.</p>
@@ -85,7 +75,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Munculkan tombol instalasi rahasia di atas
             installContainer.classList.remove('hidden');
         });
 
@@ -109,11 +98,16 @@
         if ('serviceWorker' in navigator) {
             const swCode = `
                 self.addEventListener('install', e => self.skipWaiting());
-                self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+                self.addEventListener('activate', e => self.claim());
+                self.addEventListener('fetch', e => {
+                    e.respondWith(
+                        fetch(e.request).catch(() => caches.match(e.request))
+                    );
+                });
             `;
             const blob = new Blob([swCode], { type: 'application/javascript' });
             const swUrl = URL.createObjectURL(blob);
-            navigator.serviceWorker.register(swUrl).catch(err => console.log(err));
+            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed:', err));
         }
     </script>
 </body>
