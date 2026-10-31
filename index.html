@@ -58,6 +58,17 @@
             </div>
         </a>
 
+        <!-- Tombol Pengetahuan Dasar (MENU BARU) -->
+        <a href="pengetahuan_dasar.html" class="block bg-white p-5 rounded-2xl shadow-sm border-t-4 border-amber-500 hover:shadow-md active:scale-[0.98] transition">
+            <div class="flex items-start space-x-4">
+                <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i class="fa-solid fa-book-open text-2xl w-8 text-center"></i></div>
+                <div>
+                    <h2 class="text-xl font-bold">Pengetahuan Dasar</h2>
+                    <p class="text-sm text-slate-500">Panduan dan referensi operasional toko.</p>
+                </div>
+            </div>
+        </a>
+
     </main>
 
     <!-- FOOTER -->
@@ -65,13 +76,12 @@
         SMRP Super App &copy; 2026 • 1GCX SIMPANG MARTAPURA
     </footer>
 
-    <!-- SCRIPT UTK MEMICU FITUR INSTAL HP -->
+    <!-- SCRIPT UTK MEMICU FITUR INSTAL HP & BERSIHKAN CACHE LAMA -->
     <script>
         let deferredPrompt;
         const installContainer = document.getElementById('install-container');
         const btnInstall = document.getElementById('btn-install');
 
-        // Deteksi jika browser mendeteksi aplikasi ini siap diinstal
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -82,32 +92,29 @@
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('User menginstal aplikasi.');
-            }
             deferredPrompt = null;
             installContainer.classList.add('hidden');
         });
 
         window.addEventListener('appinstalled', () => {
             installContainer.classList.add('hidden');
-            console.log('Aplikasi sukses terinstal di beranda HP.');
         });
 
-        // Registrasi Service Worker Otomatis agar PWA Aktif Valid
         if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+
             const swCode = `
                 self.addEventListener('install', e => self.skipWaiting());
                 self.addEventListener('activate', e => self.claim());
-                self.addEventListener('fetch', e => {
-                    e.respondWith(
-                        fetch(e.request).catch(() => caches.match(e.request))
-                    );
-                });
+                self.addEventListener('fetch', e => e.respondWith(fetch(e.request)));
             `;
             const blob = new Blob([swCode], { type: 'application/javascript' });
             const swUrl = URL.createObjectURL(blob);
-            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed:', err));
+            navigator.serviceWorker.register(swUrl).catch(err => console.log(err));
         }
     </script>
 </body>
