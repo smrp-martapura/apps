@@ -45,7 +45,7 @@
 
       <div class="flex-1 max-w-md">
         <div class="relative">
-          <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Cari materi: TO, STD, APC, SPD, Net Sales, Margin..." class="w-full pl-10 pr-4 py-2 rounded-full text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner">
+          <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Cari materi: STD, APC, SPD, Net Sales, Margin, IKT..." class="w-full pl-10 pr-4 py-2 rounded-full text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 shadow-inner">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
@@ -67,6 +67,7 @@
           <button onclick="filterCategory('all')" class="cat-btn active w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition bg-alfa-blue text-white">Semua Modul</button>
           <button onclick="filterCategory('kpi')" class="cat-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition">KPI Utama Toko</button>
           <button onclick="filterCategory('keuangan')" class="cat-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition">Margin & Keuangan</button>
+          <button onclick="filterCategory('insentif')" class="cat-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition">Insentif & Aturan</button>
           <button onclick="filterCategory('bookmark')" class="cat-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition flex items-center justify-between">
             <span>Tersimpan</span>
             <span id="bookmarkBadge" class="bg-yellow-400 text-slate-900 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -105,7 +106,6 @@
 
         <div class="flex border-b border-slate-200 mb-4 overflow-x-auto">
           <button onclick="switchCalcTab('spd')" id="tabBtn-spd" class="calc-tab-btn px-4 py-2 text-sm font-semibold text-alfa-red border-b-2 border-alfa-red">SPD & Net Sales</button>
-          <button onclick="switchCalcTab('to')" id="tabBtn-to" class="calc-tab-btn px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700">Turn Over (TO)</button>
           <button onclick="switchCalcTab('gm')" id="tabBtn-gm" class="calc-tab-btn px-4 py-2 text-sm font-semibold text-slate-500 hover:text-slate-700">Gross Margin & HPP</button>
         </div>
 
@@ -126,25 +126,6 @@
           </div>
           <button onclick="calculateSpdNetSales()" class="bg-alfa-blue text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-blue-800 transition">Hitung SPD & Net Sales</button>
           <div id="spdResultBox" class="p-3 rounded-lg bg-slate-50 border border-slate-200 hidden text-xs font-medium space-y-1"></div>
-        </div>
-
-        <div id="calcTab-to" class="calc-tab-content hidden space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div>
-              <label class="block font-semibold text-slate-600 mb-1">Stok On Hand (Pcs):</label>
-              <input type="number" id="toOnHand" placeholder="120" class="w-full p-2 border rounded-md">
-            </div>
-            <div>
-              <label class="block font-semibold text-slate-600 mb-1">ASQ (Penjualan/Hari):</label>
-              <input type="number" id="toAsq" placeholder="15" class="w-full p-2 border rounded-md">
-            </div>
-            <div>
-              <label class="block font-semibold text-slate-600 mb-1">TOP Supplier (Hari):</label>
-              <input type="number" id="toTop" placeholder="14" class="w-full p-2 border rounded-md">
-            </div>
-          </div>
-          <button onclick="calculateTO()" class="bg-slate-700 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-800 transition">Hitung Turn Over</button>
-          <div id="toResultBox" class="p-3 rounded-lg bg-slate-50 border border-slate-200 hidden text-xs font-medium"></div>
         </div>
 
         <div id="calcTab-gm" class="calc-tab-content hidden space-y-4">
@@ -212,31 +193,31 @@
         id: 'apc', category: 'kpi', title: '2. APC (Average Purchase Customer) / ATS',
         desc: 'Mengukur kualitas belanja dan rata-rata uang yang dihabiskan pelanggan per struk.',
         tags: ['APC', 'ATS', 'Suggestive Selling', 'Offering'],
-        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">2. APC (Average Purchase Customer) / ATS</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><strong>Rumus:</strong> APC = Total Sales / STD</div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>KUALITAS BELANJA</strong>. Rata-rata uang yang dihabiskan 1 pelanggan per struk.</p><p class="text-xs text-slate-600"><strong>Cara menaikkan:</strong> Offering di kasir, display impulsif.</p>`
+        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">2. APC (Average Purchase Customer) / ATS</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><strong>Rumus:</strong> <code>APC = Total Sales / STD</code></div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>KUALITAS BELANJA</strong>. Rata-rata uang yang dihabiskan 1 pelanggan per struk.</p><p class="text-xs text-slate-600"><strong>Cara naikkan:</strong> Offering di kasir, display impulsif.</p>`
       },
       {
         id: 'spd', category: 'kpi', title: '3. SPD (Sales Per Day)',
         desc: 'Indikator pendapatan harian hasil akhir dari perkalian keramaian dan besar belanja.',
         tags: ['SPD', 'Sales', 'Pendapatan', 'KPI'],
-        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">3. SPD (Sales Per Day)</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-red"><strong>Rumus:</strong> SPD = STD x APC</div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>PENDAPATAN HARIAN</strong>. Ini hasil akhir dari keramaian (STD) x besar belanja (APC).</p>`
+        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">3. SPD (Sales Per Day)</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-red"><strong>Rumus:</strong> <code>SPD = STD x APC</code></div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>PENDAPATAN HARIAN</strong>. Ini hasil akhir dari keramaian (STD) x besar belanja (APC).</p>`
       },
       {
         id: 'netsales', category: 'kpi', title: '4. Konsep Net Sales & E-Voucher',
         desc: 'Proyeksi total penjualan bersih bulanan dan strategi khusus peningkatan E-Voucher.',
         tags: ['Net Sales', 'JHK', 'E-Voucher', 'Omset Bulanan'],
-        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">4. KONSEP NET SALES</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue">Net Sales = SPD x JHK<br>SPD = STD x APC<br><strong>Jadi:</strong> Net Sales = STD x APC x JHK</div><p class="mb-2"><strong>JHK =</strong> Jumlah Hari Kerja (hari buka toko). Mau Net Sales bulanan naik, harus: toko ramai, belanja banyak, dan toko jangan tutup.</p><div class="p-3 bg-blue-50 text-blue-900 rounded-lg text-xs border border-blue-200 mt-2"><strong>Khusus E-Voucher:</strong> Fokus naikkan STD E-Voucher dan APC E-Voucher dengan menawarkan pulsa/paket data ke setiap pelanggan.</div>`
+        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">4. KONSEP NET SALES</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><code>Net Sales = SPD x JHK</code><br><code>SPD = STD x APC</code><br><strong>Jadi:</strong> <code>Net Sales = STD x APC x JHK</code></div><p class="mb-2"><strong>JHK =</strong> Jumlah Hari Kerja (hari buka toko). Mau Net Sales bulanan naik, harus: toko ramai, belanja banyak, dan toko jangan tutup.</p><div class="p-3 bg-blue-50 text-blue-900 rounded-lg text-xs border border-blue-200 mt-2"><strong>Khusus E-Voucher:</strong> Fokus naikkan STD E-Voucher dan APC E-Voucher dengan menawarkan pulsa/paket data ke setiap pelanggan.</div>`
       },
       {
         id: 'margin', category: 'keuangan', title: '5. Gross Margin & HPP',
         desc: 'Analisis persentase keuntungan, nilai rupiah margin, dan harga pokok pembelian dari supplier.',
         tags: ['GM', 'Gross Margin', 'HPP', 'Profit', 'Harga Jual'],
-        fullText: `<h4 class="font-bold text-base text-emerald-700 mb-2">5. GROSS MARGIN & HPP</h4><ul class="space-y-2 mb-3 text-xs"><li class="p-2 bg-slate-50 rounded border"><strong>HPP:</strong> Harga modal beli dari supplier.</li><li class="p-2 bg-slate-50 rounded border"><strong>GM (Rp):</strong> <code>Harga Jual - HPP</code> (untung dalam rupiah)</li><li class="p-2 bg-slate-50 rounded border"><strong>GM (%):</strong> <code>(Harga Jual - HPP) / Harga Jual x 100%</code> (untung dalam persen)</li></ul><div class="p-3 bg-amber-50 text-amber-900 rounded-lg text-xs border border-amber-200"><strong>Hubungan:</strong> Harga Jual = HPP + GM (Rp)</div>`
+        fullText: `<h4 class="font-bold text-base text-emerald-700 mb-2">5. GROSS MARGIN & HPP</h4><ul class="space-y-2 mb-3 text-xs"><li class="p-2 bg-slate-50 rounded border"><strong>HPP:</strong> Harga modal beli dari supplier.</li><li class="p-2 bg-slate-50 rounded border"><strong>GM (Rp):</strong> <code>Harga Jual - HPP</code> (untung dalam rupiah)</li><li class="p-2 bg-slate-50 rounded border"><strong>GM (%):</strong> <code>(Harga Jual - HPP) / Harga Jual x 100%</code> (untung dalam persen)</li></ul><div class="p-3 bg-amber-50 text-amber-900 rounded-lg text-xs border border-amber-200"><strong>Hubungan:</strong> <code>Harga Jual = HPP + GM (Rp)</code></div>`
       },
       {
-        id: 'to', category: 'keuangan', title: '6. Turn Over (TO)',
-        desc: 'Mengukur perputaran stok barang di toko dibandingkan dengan TOP supplier.',
-        tags: ['TO', 'Stock', 'ASQ', 'TOP', 'Cashflow'],
-        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">6. TURN OVER (TO)</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><strong>Rumus:</strong> TO = On Hand / ASQ</div><p class="mb-2">Gunanya untuk melihat berapa hari stock akan habis. Dibandingkan dengan <strong>TOP (Term Of Payment)</strong> supplier.</p><div class="p-3 bg-emerald-50 text-emerald-800 rounded-lg text-xs border border-emerald-200"><strong>Kondisi Ideal: TO &lt; TOP</strong><br>Artinya barang sudah laku terjual sebelum kita harus bayar ke supplier. Uang tidak nyangkut.</div>`
+        id: 'ikt', category: 'insentif', title: '6. IKT 2025 (Insentif Kerja Toko)',
+        desc: 'Syarat kelayakan bonus IKT dan catatan khusus persentase Gross Margin.',
+        tags: ['IKT', 'Insentif', 'Net Profit', 'Sales'],
+        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">6. IKT 2025 (Insentif Kerja Toko)</h4><p class="mb-2">Target harus 100% semua baru dapat bonus:</p><ol class="list-decimal pl-5 space-y-1 mb-3 text-xs"><li>Total Sales (Retail + E-Voucher) = 100%</li><li>% Gross Margin & Value = 100%</li><li>Net Profit = 100%</li></ol><div class="p-3 bg-emerald-50 text-emerald-900 rounded-lg text-xs border border-emerald-200"><strong>Catatan:</strong> Apabila GM dibawah 100% tapi profit dan sales 100% lebih maka akan tetap menang IKT.</div>`
       }
     ];
 
@@ -355,18 +336,6 @@
       const box = document.getElementById('spdResultBox');
       box.classList.remove('hidden');
       box.innerHTML = `<div><strong>Hasil SPD:</strong> Rp ${spd.toLocaleString('id-ID')}</div><div><strong>Proyeksi Net Sales:</strong> Rp ${netSales.toLocaleString('id-ID')}</div>`;
-    }
-
-    function calculateTO() {
-      const onHand = parseFloat(document.getElementById('toOnHand').value) || 0;
-      const asq = parseFloat(document.getElementById('toAsq').value) || 0;
-      const top = parseFloat(document.getElementById('toTop').value) || 0;
-      const box = document.getElementById('toResultBox');
-      box.classList.remove('hidden');
-      if (asq <= 0) { box.innerHTML = `ASQ harus > 0.`; return; }
-      const to = onHand / asq;
-      box.className = to < top ? "p-3 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs" : "p-3 rounded-lg bg-amber-100 border border-amber-300 text-amber-900 text-xs";
-      box.innerHTML = `<div><strong>Turn Over (TO):</strong> ${to.toFixed(1)} Hari (TOP: ${top} Hari)</div>`;
     }
 
     function calculateGM() {
