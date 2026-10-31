@@ -112,7 +112,7 @@
         </div>
 
         <div id="calcTab-ikt" class="calc-tab-content space-y-4">
-          <p class="text-xs text-slate-500">Cek kelayakan Insentif Kerja Toko (IKT). Semua target minimal 100% dan bebas penyimpangan settlement.</p>
+          <p class="text-xs text-slate-500">Cek kelayakan Insentif Kerja Toko (IKT). Target utama 100% (dengan toleransi GM jika profit & sales tercapai).</p>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label class="block text-xs font-semibold text-slate-600 mb-1">Ach. Sales Total (%):</label>
@@ -126,10 +126,6 @@
               <label class="block text-xs font-semibold text-slate-600 mb-1">Ach. Net Profit (%):</label>
               <input type="number" id="iktNp" value="100" class="w-full text-sm p-2 border rounded-md">
             </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="iktSp3" class="rounded text-alfa-red focus:ring-alfa-red">
-            <label for="iktSp3" class="text-xs text-slate-700 font-medium">Ada personel toko yang kena SP3 penyimpangan Settlement?</label>
           </div>
           <button onclick="calculateIKT()" class="bg-alfa-red text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-alfa-darkRed transition">Hitung Kelayakan IKT</button>
           <div id="iktResultBox" class="p-3 rounded-lg bg-slate-50 border border-slate-200 hidden text-xs font-medium"></div>
@@ -229,46 +225,46 @@
   <script>
     const modulesData = [
       {
-        id: 'to', category: 'keuangan', title: '1. Turn Over (TO) & Stock Days',
-        desc: 'Mengukur perputaran persediaan barang dagangan di toko dibandingkan dengan Term of Payment (TOP) supplier.',
-        tags: ['TO', 'Stock', 'ASQ', 'TOP', 'Cashflow'],
-        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">Pentingnya Turn Over (TO) Toko</h4><p class="mb-3">Turn Over (TO) digunakan untuk mengukur berapa hari persediaan stok barang di toko akan habis berdasarkan kecepatan penjualan rata-rata harian (ASQ).</p><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><strong>Rumus TO:</strong> TO = On Hand / ASQ</div><ul class="list-disc pl-5 space-y-1 mb-3"><li><strong>On Hand:</strong> Jumlah unit fisik barang yang tersedia di toko/gudang toko.</li><li><strong>ASQ (Average Sales Quantity):</strong> Rata-rata penjualan harian produk tersebut.</li><li><strong>TOP (Term of Payment):</strong> Jangka waktu pembayaran faktur kepada supplier.</li></ul><div class="p-3 bg-emerald-50 text-emerald-800 rounded-lg text-xs border border-emerald-200"><strong>Kondisi Ideal: TO &lt; TOP</strong><br>Artinya barang sudah laku terjual sebelum toko jatuh tempo membayar ke supplier.</div>`
-      },
-      {
-        id: 'std', category: 'kpi', title: '2. STD (Struk Transaction per Day)',
-        desc: 'Indikator keramaian toko (Traffic) berdasarkan jumlah transaksi struk per hari.',
+        id: 'std', category: 'kpi', title: '1. STD (Struk Transaction per Day)',
+        desc: 'Mengukur keramaian toko berdasarkan jumlah transaksi struk per hari.',
         tags: ['STD', 'Traffic', 'Struk', 'Pelanggan'],
-        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">STD - Struk Transaction per Day</h4><p class="mb-3">STD adalah rata-rata struk per hari atas transaksi penjualan kepada konsumen akhir. STD murni mengukur <strong>banyaknya orang/keramaian toko</strong>, bukan besarnya uang.</p><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-red">1 Struk = 1 Transaksi = 1 Customer</div>`
+        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">1. STD (Struk Transaction per Day)</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-red"><strong>Rumus:</strong> Jumlah struk / jumlah pelanggan per hari.</div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>KERAMAIAN TOKO</strong>. STD tinggi = toko ramai.</p>`
       },
       {
-        id: 'apc', category: 'kpi', title: '3. APC (Average Purchase Customer) / ATS',
-        desc: 'Mengukur kualitas belanja dan rata-rata nominal uang yang dikeluarkan pelanggan per transaksi.',
+        id: 'apc', category: 'kpi', title: '2. APC (Average Purchase Customer) / ATS',
+        desc: 'Mengukur kualitas belanja dan rata-rata uang yang dihabiskan pelanggan per struk.',
         tags: ['APC', 'ATS', 'Suggestive Selling', 'Offering'],
-        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">APC - Average Purchase Customer</h4><p class="mb-3">APC mengukur rata-rata nominal belanja konsumen dalam satu kali transaksi.</p><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue">APC = Total Sales / STD</div>`
+        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">2. APC (Average Purchase Customer) / ATS</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><strong>Rumus:</strong> APC = Total Sales / STD</div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>KUALITAS BELANJA</strong>. Rata-rata uang yang dihabiskan 1 pelanggan per struk.</p><p class="text-xs text-slate-600"><strong>Cara menaikkan:</strong> Offering di kasir, display impulsif.</p>`
       },
       {
-        id: 'spd', category: 'kpi', title: '4. SPD (Sales Per Day)',
-        desc: 'Indikator utama pendapatan toko harian hasil perkalian dari keramaian (STD) dan nominal belanja (APC).',
+        id: 'spd', category: 'kpi', title: '3. SPD (Sales Per Day)',
+        desc: 'Indikator pendapatan harian hasil akhir dari perkalian keramaian dan besar belanja.',
         tags: ['SPD', 'Sales', 'Pendapatan', 'KPI'],
-        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">SPD - Sales Per Day</h4><p class="mb-3">SPD adalah total pencapaian penjualan uang toko mulai dari jam buka hingga tutup toko dalam satu hari.</p><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-red">SPD = STD x APC</div>`
+        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">3. SPD (Sales Per Day)</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-red"><strong>Rumus:</strong> SPD = STD x APC</div><p class="mb-2"><strong>Fungsi:</strong> Mengukur <strong>PENDAPATAN HARIAN</strong>. Ini hasil akhir dari keramaian (STD) x besar belanja (APC).</p>`
       },
       {
-        id: 'netsales', category: 'kpi', title: '5. Konsep Net Sales & JHK',
-        desc: 'Proyeksi total penjualan bersih bulanan berdasarkan SPD dan Jumlah Hari Kerja (JHK).',
-        tags: ['Net Sales', 'JHK', 'Omset Bulanan'],
-        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">Perhitungan Net Sales Bulanan</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue">Net Sales = SPD x JHK</div>`
+        id: 'netsales', category: 'kpi', title: '4. Konsep Net Sales & E-Voucher',
+        desc: 'Proyeksi total penjualan bersih bulanan dan strategi khusus peningkatan E-Voucher.',
+        tags: ['Net Sales', 'JHK', 'E-Voucher', 'Omset Bulanan'],
+        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">4. KONSEP NET SALES</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue">Net Sales = SPD x JHK<br>SPD = STD x APC<br><strong>Jadi:</strong> Net Sales = STD x APC x JHK</div><p class="mb-2"><strong>JHK =</strong> Jumlah Hari Kerja (hari buka toko). Mau Net Sales bulanan naik, harus: toko ramai, belanja banyak, dan toko jangan tutup.</p><div class="p-3 bg-blue-50 text-blue-900 rounded-lg text-xs border border-blue-200 mt-2"><strong>Khusus E-Voucher:</strong> Fokus naikkan STD E-Voucher dan APC E-Voucher dengan menawarkan pulsa/paket data ke setiap pelanggan.</div>`
       },
       {
-        id: 'margin', category: 'keuangan', title: '6. Gross Margin (%) & HPP',
+        id: 'margin', category: 'keuangan', title: '5. Gross Margin & HPP',
         desc: 'Analisis persentase keuntungan, nilai rupiah margin, dan harga pokok pembelian dari supplier.',
         tags: ['GM', 'Gross Margin', 'HPP', 'Profit', 'Harga Jual'],
-        fullText: `<h4 class="font-bold text-base text-emerald-700 mb-2">Gross Margin & Harga Pokok Penjualan</h4><div class="p-3 bg-amber-50 text-amber-900 rounded-lg text-xs border border-amber-200">Formula Kunci: Harga Jual = HPP + GM (Rp)</div>`
+        fullText: `<h4 class="font-bold text-base text-emerald-700 mb-2">5. GROSS MARGIN & HPP</h4><ul class="space-y-2 mb-3 text-xs"><li class="p-2 bg-slate-50 rounded border"><strong>HPP:</strong> Harga modal beli dari supplier.</li><li class="p-2 bg-slate-50 rounded border"><strong>GM (Rp):</strong> <code>Harga Jual - HPP</code> (untung dalam rupiah)</li><li class="p-2 bg-slate-50 rounded border"><strong>GM (%):</strong> <code>(Harga Jual - HPP) / Harga Jual x 100%</code> (untung dalam persen)</li></ul><div class="p-3 bg-amber-50 text-amber-900 rounded-lg text-xs border border-amber-200"><strong>Hubungan:</strong> Harga Jual = HPP + GM (Rp)</div>`
       },
       {
-        id: 'ikt', category: 'insentif', title: '7. IKT & Kebijakan SP3 Settlement',
-        desc: 'Syarat kelayakan Insentif Kerja Toko dan aturan ketat diskualifikasi akibat penyimpangan settlement.',
-        tags: ['IKT', 'Insentif', 'SP3', 'Settlement', 'Net Profit'],
-        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">Ketentuan IKT & Integritas Toko</h4><p class="mb-3">Untuk mendapatkan bonus Insentif Kerja Toko (IKT), toko harus mencapai 100% target pada 3 indikator utama (Sales, Gross Margin, Net Profit).</p><div class="p-3 bg-red-50 text-red-900 rounded-lg text-xs border border-red-200"><strong>Aturan Penting Diskualifikasi Personel:</strong><br>Jika ada personel yang mendapat SP3 karena penyimpangan Settlement, maka personel tersebut didiskualifikasi dari penerimaan IKT.</div>`
+        id: 'ikt', category: 'insentif', title: '6. IKT 2025 (Insentif Kerja Toko)',
+        desc: 'Syarat kelayakan bonus IKT dan catatan khusus persentase Gross Margin.',
+        tags: ['IKT', 'Insentif', 'Net Profit', 'Sales'],
+        fullText: `<h4 class="font-bold text-base text-alfa-red mb-2">6. IKT 2025 (Insentif Kerja Toko)</h4><p class="mb-2">Target harus 100% semua baru dapat bonus:</p><ol class="list-decimal pl-5 space-y-1 mb-3 text-xs"><li>Total Sales (Retail + E-Voucher) = 100%</li><li>% Gross Margin & Value = 100%</li><li>Net Profit = 100%</li></ol><div class="p-3 bg-emerald-50 text-emerald-900 rounded-lg text-xs border border-emerald-200"><strong>Catatan:</strong> Apabila GM dibawah 100% tapi profit dan sales 100% lebih maka akan tetap menang IKT.</div>`
+      },
+      {
+        id: 'to', category: 'keuangan', title: '7. Turn Over (TO)',
+        desc: 'Mengukur perputaran stok barang di toko dibandingkan dengan TOP supplier.',
+        tags: ['TO', 'Stock', 'ASQ', 'TOP', 'Cashflow'],
+        fullText: `<h4 class="font-bold text-base text-alfa-blue mb-2">7. TURN OVER (TO)</h4><div class="p-3 bg-slate-100 rounded-lg font-mono text-xs mb-3 border-l-4 border-alfa-blue"><strong>Rumus:</strong> TO = On Hand / ASQ</div><p class="mb-2">Gunanya untuk melihat berapa hari stock akan habis. Dibandingkan dengan <strong>TOP (Term Of Payment)</strong> supplier.</p><div class="p-3 bg-emerald-50 text-emerald-800 rounded-lg text-xs border border-emerald-200"><strong>Kondisi Ideal: TO &lt; TOP</strong><br>Artinya barang sudah laku terjual sebelum kita harus bayar ke supplier. Uang tidak nyangkut.</div>`
       }
     ];
 
@@ -382,21 +378,20 @@
       const sales = parseFloat(document.getElementById('iktSales').value) || 0;
       const gm = parseFloat(document.getElementById('iktGm').value) || 0;
       const np = parseFloat(document.getElementById('iktNp').value) || 0;
-      const sp3 = document.getElementById('iktSp3').checked;
       const box = document.getElementById('iktResultBox');
       box.classList.remove('hidden');
 
-      if (sales >= 100 && gm >= 100 && np >= 100) {
-        if (sp3) {
-          box.className = "p-3 rounded-lg bg-amber-100 border border-amber-300 text-amber-900 text-xs";
-          box.innerHTML = `<strong>Toko Berhak IKT!</strong> Namun personel yang mendapat SP3 Settlement <strong>DIDISKUALIFIKASI</strong>.`;
+      if (sales >= 100 && np >= 100) {
+        if (gm < 100) {
+          box.className = "p-3 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs";
+          box.innerHTML = `<strong>MENANG IKT!</strong> Walaupun % Gross Margin di bawah 100%, toko tetap menang IKT karena Sales dan Net Profit mencapai 100% lebih.`;
         } else {
           box.className = "p-3 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs";
-          box.innerHTML = `<strong>SELAMAT!</strong> Toko memenuhi 100% kriteria dan seluruh personel berhak menerima IKT.`;
+          box.innerHTML = `<strong>SELAMAT!</strong> Toko memenuhi seluruh kriteria target IKT secara sempurna.`;
         }
       } else {
         box.className = "p-3 rounded-lg bg-red-100 border border-red-300 text-red-900 text-xs";
-        box.innerHTML = `<strong>BELUM MEMENUHI:</strong> Target harus 100% pada ketiga indikator.`;
+        box.innerHTML = `<strong>BELUM MEMENUHI:</strong> Target Sales dan Net Profit wajib mencapai minimal 100%.`;
       }
     }
 
