@@ -56,7 +56,7 @@
     <section id="adminPanel" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-xl shadow-sm space-y-4">
       <div>
         <h2 class="text-lg font-bold text-amber-900 mb-1">Panel Admin: Atur / Reset Target Aktif</h2>
-        <p class="text-xs text-amber-700">Serba Gratis, PSM, & PWP akan berkurang otomatis. Seger & STD Member tetap per shift.</p>
+        <p class="text-xs text-amber-700">SG & PWP (Tgl 1-15 & 16-31). PSM (Update Mingguan). Seger & STD Member (Bulanan).</p>
       </div>
       
       <form id="targetForm" class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
@@ -65,7 +65,7 @@
           <input type="number" id="adm_sg" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-amber-900 mb-1">PSM</label>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">PSM (Mingguan)</label>
           <input type="number" id="adm_psm" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
         <div>
@@ -184,43 +184,48 @@
       </table>
     </section>
 
-    <!-- PANEL ANALISIS MENDALAM & AKUMULASI (DI BAWAH) -->
+    <!-- PANEL ANALISIS MENDALAM & AKUMULASI + SISA HARI / GAP -->
     <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-md space-y-6">
       <div class="flex items-center justify-between border-b border-slate-700 pb-3">
         <h2 class="text-lg font-bold flex items-center gap-2">
-          📊 Analisis Mendalam & Akumulasi Beserta GAP
+          📊 Analisis Periode, GAP Sisa Target & Sisa Hari
         </h2>
-        <span class="text-xs bg-blue-600 px-2.5 py-1 rounded-full font-medium">SMRP Martapura</span>
+        <span id="badgeSisaHari" class="text-xs bg-blue-600 px-2.5 py-1 rounded-full font-medium">Menghitung hari...</span>
       </div>
 
-      <!-- Akumulasi Total Actual + GAP -->
+      <!-- Akumulasi Total Actual + GAP & Sisa Hari Berdasarkan Aturan Periode -->
       <div>
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Akumulasi Actual & Keterangan GAP Sisa Target</p>
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Akumulasi Aktual, Sisa GAP Target & Sisa Hari Periode</p>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">Serba Gratis</p>
             <p id="sum_sg" class="text-lg font-bold text-blue-400">0</p>
             <p id="gap_sg" class="text-[11px] text-amber-300 font-medium">GAP: 0</p>
+            <p id="sisaHariSg" class="text-[10px] text-slate-400">Sisa: - hari (Periode Tgl 15/31)</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
-            <p class="text-xs text-slate-400">PSM</p>
+            <p class="text-xs text-slate-400">PSM (Mingguan)</p>
             <p id="sum_psm" class="text-lg font-bold text-emerald-400">0</p>
             <p id="gap_psm" class="text-[11px] text-amber-300 font-medium">GAP: 0</p>
+            <p id="sisaHariPsm" class="text-[10px] text-slate-400">Sisa: - hari (Siklus 7 Hari)</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">PWP</p>
             <p id="sum_pwp" class="text-lg font-bold text-amber-400">0</p>
             <p id="gap_pwp" class="text-[11px] text-amber-300 font-medium">GAP: 0</p>
+            <p id="sisaHariPwp" class="text-[10px] text-slate-400">Sisa: - hari (Periode Tgl 15/31)</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">Seger</p>
             <p id="sum_seger" class="text-lg font-bold text-purple-400">0</p>
             <p class="text-[11px] text-slate-400">Tetap per Shift</p>
+            <p class="text-[10px] text-slate-400">Harian / Shift</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 col-span-2 md:col-span-1 text-center space-y-1">
             <p class="text-xs text-slate-400">STD Member</p>
             <p id="sum_member" class="text-lg font-bold text-rose-400">0</p>
-            <p class="text-[11px] text-slate-400">Tetap per Shift</p>
+            <p class="text-[11px] text-slate-400">Bulanan</p>
+            <p id="sisaHariMember" class="text-[10px] text-slate-400">Sisa: - hari (s.d Akhir Bln)</p>
           </div>
         </div>
       </div>
@@ -252,18 +257,18 @@
       <!-- Solusi & Rekomendasi Langkah Kedepan -->
       <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex items-center justify-between">
-          <p class="font-semibold text-white text-sm">💡 Evaluasi & Solusi Strategis Akhir Bulan</p>
+          <p class="font-semibold text-white text-sm">💡 Evaluasi & Solusi Strategis Berdasarkan Sisa Hari</p>
           <span class="text-xs px-2 py-0.5 rounded font-bold bg-blue-500 text-white">Aktif</span>
         </div>
         <p id="analisisGap" class="text-xs md:text-sm text-slate-300 leading-relaxed">
-          Menganalisis pencapaian kasir dan proyeksi target...
+          Menganalisis sisa hari target Serba Gratis/PWP (tgl 15 atau akhir bulan), siklus mingguan PSM, dan performa kasir...
         </p>
         <div class="border-t border-slate-700 pt-3">
           <p class="font-semibold text-amber-300 text-xs uppercase mb-1">🛠️ Rekomendasi Tindakan Operasional:</p>
           <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-            <li>Memberikan motivasi dan evaluasi khusus kepada kasir dengan kontribusi terendah agar lebih aktif menawarkan item promo ke pelanggan.</li>
-            <li>Memastikan kasir pada Shift 1 dan Shift 2 mengontrol sisa target Serba Gratis, PSM, dan PWP agar tercapai secara proporsional setiap harinya.</li>
-            <li>Memaksimalkan penawaran member dan produk Seger pada jam-jam sibuk kunjungan konsumen.</li>
+            <li><b>Perhatian Khusus SG & PWP:</b> Perhatikan batas tanggal 15 untuk gelombang pertama dan tanggal 30/31 untuk gelombang kedua sebelum target di-update admin.</li>
+            <li><b>Siklus PSM Mingguan:</b> Pastikan target mingguan PSM tercapai tepat waktu setiap 7 hari siklus agar tidak menumpuk di akhir bulan.</li>
+            <li><b>Aktivasi Kasir:</b> Dorong kasir dengan perolehan terendah untuk lebih proaktif menawarkan item promo kepada konsumen.</li>
           </ul>
         </div>
       </div>
@@ -329,6 +334,59 @@
       return String(tglStr).substring(0, 10);
     }
 
+    // Fungsi menghitung sisa hari berdasarkan tanggal hari ini (Klien lokal / Tanggal Input Form)
+    function hitungSisaHari() {
+      const inputDateVal = document.getElementById("lap_tanggal").value;
+      const now = inputDateVal ? new Date(inputDateVal) : new Date();
+      const tgl = now.getDate();
+      const bulan = now.getMonth();
+      const tahun = now.getFullYear();
+
+      // Total hari di bulan aktif
+      const totalHariBulanIni = new Date(tahun, bulan + 1, 0).getDate();
+
+      // 1. Sisa Hari untuk SG & PWP (Batas tgl 15 atau Akhir Bulan)
+      let sisaSgPwp = 0;
+      let infoPeriodeSgPwp = "";
+      if (tgl <= 15) {
+        sisaSgPwp = 15 - tgl;
+        infoPeriodeSgPwp = "Sisa s.d Tgl 15";
+      } else {
+        sisaSgPwp = totalHariBulanIni - tgl;
+        infoPeriodeSgPwp = "Sisa s.d Akhir Bln";
+      }
+
+      // 2. Sisa Hari untuk PSM (Siklus Mingguan per 7 hari: 1-7, 8-14, 15-21, 22-akhir)
+      let sisaPsm = 0;
+      let infoPsm = "";
+      if (tgl <= 7) {
+        sisaPsm = 7 - tgl;
+        infoPsm = "Siklus Tgl 1-7";
+      } else if (tgl <= 14) {
+        sisaPsm = 14 - tgl;
+        infoPsm = "Siklus Tgl 8-14";
+      } else if (tgl <= 21) {
+        sisaPsm = 21 - tgl;
+        infoPsm = "Siklus Tgl 15-21";
+      } else {
+        sisaPsm = totalHariBulanIni - tgl;
+        infoPsm = "Siklus Tgl 22-Akhir";
+      }
+
+      // 3. Sisa Hari untuk STD Member (Bulanan s.d Akhir Bulan)
+      const sisaMember = totalHariBulanIni - tgl;
+
+      return {
+        sisaSgPwp,
+        infoPeriodeSgPwp,
+        sisaPsm,
+        infoPsm,
+        sisaMember,
+        totalHariBulanIni,
+        tglSekarang: tgl
+      };
+    }
+
     async function loadData() {
       try {
         const res = await fetch(SCRIPT_URL);
@@ -339,6 +397,15 @@
           document.getElementById(`t_${k}`).textContent = t[k];
           document.getElementById(`adm_${k}`).value = t[k];
         });
+
+        const hariInfo = hitungSisaHari();
+        document.getElementById("badgeSisaHari").textContent = `Hari Ke-${hariInfo.tglSekarang} (Bulan Ini)`;
+
+        // Tampilkan informasi sisa hari pada masing-masing kotak GAP
+        document.getElementById("sisaHariSg").textContent = `Sisa: ${hariInfo.sisaSgPwp} hari (${hariInfo.infoPeriodeSgPwp})`;
+        document.getElementById("sisaHariPwp").textContent = `Sisa: ${hariInfo.sisaSgPwp} hari (${hariInfo.infoPeriodeSgPwp})`;
+        document.getElementById("sisaHariPsm").textContent = `Sisa: ${hariInfo.sisaPsm} hari (${hariInfo.infoPsm})`;
+        document.getElementById("sisaHariMember").textContent = `Sisa: ${hariInfo.sisaMember} hari (s.d Akhir Bln)`;
 
         const tbody = document.getElementById("tabelBody");
         if (data.laporan.length === 0) {
@@ -393,7 +460,7 @@
         document.getElementById("sum_member").textContent = totMember;
 
         document.getElementById("gap_sg").textContent = `GAP (Sisa): ${t.sg}`;
-        document.getElementById("gap_psm").textContent = `GAP (Sisa): ${t.psm}`;
+        document.getElementById("gap_psm").textContent = `GAP Mingguan: ${t.psm}`;
         document.getElementById("gap_pwp").textContent = `GAP (Sisa): ${t.pwp}`;
 
         // Render Tabel Rincian Per Kasir
@@ -423,12 +490,13 @@
         });
         document.getElementById("tabelKasirDetail").innerHTML = kasirHtml;
 
-        // Analisis teks kesimpulan
+        // Analisis teks kesimpulan berdasarkan sisa hari
         const topKasir = kasirArray.length > 0 ? kasirArray[0].nama : "-";
-        const lowKasir = kasirArray.length > 0 ? kasirArray[kasirArray.length - 1].nama : "-";
         document.getElementById("analisisGap").innerHTML = `
-          Hingga saat ini, total <b>${data.laporan.length} shift</b> telah terlaporkan. Kontributor item penjualan tertinggi dipegang oleh <b>${topKasir}</b>, sementara <b>${lowKasir}</b> mencatatkan total perolehan terendah dan memerlukan dorongan ekstra. 
-          Sisa target (GAP) yang harus diselesaikan sampai akhir bulan meliputi Serba Gratis (${t.sg} item), PSM (${t.psm} item), dan PWP (${t.pwp} item).
+          Saat ini berada di <b>Hari ke-${hariInfo.tglSekarang}</b> bulan ini. 
+          Sisa hari untuk target <b>Serba Gratis & PWP</b> adalah <b>${hariInfo.sisaSgPwp} hari lagi</b> (${hariInfo.infoPeriodeSgPwp}) sebelum jadwal update target berikutnya. 
+          Sementara untuk siklus <b>PSM Mingguan</b> tersisa <b>${hariInfo.sisaPsm} hari</b> dalam siklus ini (${hariInfo.infoPsm}). 
+          Kontribusi kasir tertinggi saat ini dipimpin oleh <b>${topKasir}</b>.
         `;
 
         tbody.innerHTML = data.laporan.map((row, index) => {
