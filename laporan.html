@@ -189,6 +189,45 @@
         </tbody>
       </table>
     </section>
+
+    <!-- PANEL ANALISIS PERKEMBANGAN (DI BAGIAN BAWAH) -->
+    <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-md space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          📊 Analisis Perkembangan & Akumulasi Penjualan
+        </h2>
+        <span class="text-xs bg-blue-600 px-2.5 py-1 rounded-full font-medium">Real-time Summary</span>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 pt-2">
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center">
+          <p class="text-xs text-slate-400 mb-1">Total Actual SG</p>
+          <p id="sum_sg" class="text-xl font-bold text-blue-400">0</p>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center">
+          <p class="text-xs text-slate-400 mb-1">Total Actual PSM</p>
+          <p id="sum_psm" class="text-xl font-bold text-emerald-400">0</p>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center">
+          <p class="text-xs text-slate-400 mb-1">Total Actual PWP</p>
+          <p id="sum_pwp" class="text-xl font-bold text-amber-400">0</p>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center">
+          <p class="text-xs text-slate-400 mb-1">Total Actual Seger</p>
+          <p id="sum_seger" class="text-xl font-bold text-purple-400">0</p>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 col-span-2 md:col-span-1 text-center">
+          <p class="text-xs text-slate-400 mb-1">Total Actual Member</p>
+          <p id="sum_member" class="text-xl font-bold text-rose-400">0</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700 text-sm leading-relaxed text-slate-300">
+        <p class="font-semibold text-white mb-1">💡 Kesimpulan & Tren Kinerja:</p>
+        <p id="analisisText">Memuat analisis data...</p>
+      </div>
+    </section>
+
   </div>
 
   <script>
@@ -246,9 +285,7 @@
 
     function formatTanggal(tglStr) {
       if (!tglStr) return "";
-      // Ambil 10 karakter pertama (YYYY-MM-DD) secara aman tanpa konversi zona waktu objek Date
-      const cleanStr = String(tglStr).substring(0, 10);
-      return cleanStr;
+      return String(tglStr).substring(0, 10);
     }
 
     async function loadData() {
@@ -265,18 +302,40 @@
         const tbody = document.getElementById("tabelBody");
         if (data.laporan.length === 0) {
           tbody.innerHTML = `<tr><td colspan="18" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
+          document.getElementById("sum_sg").textContent = "0";
+          document.getElementById("sum_psm").textContent = "0";
+          document.getElementById("sum_pwp").textContent = "0";
+          document.getElementById("sum_seger").textContent = "0";
+          document.getElementById("sum_member").textContent = "0";
+          document.getElementById("analisisText").textContent = "Belum ada data laporan shift yang tercatat untuk dianalisis.";
           return;
         }
 
-        // Urutkan ulang data di sisi frontend berbasis string YYYY-MM-DD dan Shift secara presisi (Terbaru di atas)
-        data.laporan.sort((a, b) => {
-          const tglA = String(a.tanggal).substring(0, 10);
-          const tglB = String(b.tanggal).substring(0, 10);
-          if (tglB !== tglA) {
-            return tglB.localeCompare(tglA); // Tanggal terbaru di atas
-          }
-          return Number(b.shift) - Number(a.shift); // Shift 2 di atas Shift 1 jika tanggal sama
+        // Variabel penampung akumulasi actual
+        let totSg = 0, totPsm = 0, totPwp = 0, totSeger = 0, totMember = 0;
+
+        data.laporan.forEach(row => {
+          totSg += Number(row.sg.actual) || 0;
+          totPsm += Number(row.psm.actual) || 0;
+          totPwp += Number(row.pwp.actual) || 0;
+          totSeger += Number(row.seger.actual) || 0;
+          totMember += Number(row.member.actual) || 0;
         });
+
+        // Tampilkan total akumulasi ke kartu analisis
+        document.getElementById("sum_sg").textContent = totSg;
+        document.getElementById("sum_psm").textContent = totPsm;
+        document.getElementById("sum_pwp").textContent = totPwp;
+        document.getElementById("sum_seger").textContent = totSeger;
+        document.getElementById("sum_member").textContent = totMember;
+
+        // Buat teks ringkasan analisis perkembangan
+        const totalShift = data.laporan.length;
+        document.getElementById("analisisText").innerHTML = `
+          Total keseluruhan shift yang telah dilaporkan adalah sebanyak <b>${totalShift} shift</b>. 
+          Akumulasi penjualan tertinggi saat ini tercatat pada kategori <b>PSM</b> (${totPsm} actual) dan <b>STD Member</b> (${totMember} actual). 
+          Pastikan untuk terus memantau sisa target aktif pada kategori Serba Gratis, PSM, dan PWP agar target bulanan SMRP Martapura tercapai secara optimal.
+        `;
 
         tbody.innerHTML = data.laporan.map((row, index) => {
           const deleteBtn = currentUser.role === "admin" 
