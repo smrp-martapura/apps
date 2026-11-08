@@ -56,7 +56,7 @@
     <section id="adminPanel" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-xl shadow-sm space-y-4">
       <div>
         <h2 class="text-lg font-bold text-amber-900 mb-1">Panel Admin: Atur / Reset Target Aktif</h2>
-        <p class="text-xs text-amber-700">Target di bawah ini akan otomatis berkurang setiap ada laporan masuk dari kasir.</p>
+        <p class="text-xs text-amber-700">Serba Gratis, PSM, & PWP akan berkurang otomatis. Seger & STD Member tetap per shift.</p>
       </div>
       
       <form id="targetForm" class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
@@ -142,7 +142,7 @@
           <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
               <span>SEGER</span>
-              <span>Sisa Target: <span id="t_seger" class="text-blue-600">0</span></span>
+              <span>Target Shift: <span id="t_seger" class="text-blue-600">0</span></span>
             </div>
             <input type="number" id="act_seger" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
           </div>
@@ -150,7 +150,7 @@
           <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
               <span>STD MEMBER</span>
-              <span>Sisa Target: <span id="t_member" class="text-blue-600">0</span></span>
+              <span>Target Shift: <span id="t_member" class="text-blue-600">0</span></span>
             </div>
             <input type="number" id="act_member" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
           </div>
@@ -193,7 +193,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9lrUTysx3mhkgmk9aVs5B_Ayp338_Ntf2qgKFtfBZJGU1V3tZrD64z-hK9c-dCIZukA/exec";
+    // URL Web App Google Apps Script terbaru
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymOAw75r5YFFXIreKep5a1pniAN15MCxfuHbcxRQWX7RWb5X72z84xWH4fGWelVwwKFw/exec";
 
     const USERS = {
       "19012226": { nama: "Abdurrahim", role: "admin" },
