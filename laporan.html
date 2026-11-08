@@ -182,7 +182,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbys8B6e2bl3_5qE0MUFv52dA8TRn7Zqa6VtK8wtElMN_XQhXrMBfPxGaIT7UuQmPxIKmg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzsoS9AtkBqfFOdW7fsufEComNQZRk4vrwMM23iiloCWW4hRPGQAvyve2QlO9I1ORqrUA/exec";
 
     const USERS = {
       "19012226": { nama: "Abdurrahim", role: "admin" },
@@ -249,7 +249,6 @@
         }
 
         tbody.innerHTML = data.laporan.map((row, index) => {
-          // Tombol Hapus hanya muncul untuk Admin (19012226)
           const deleteBtn = currentUser.role === "admin" 
             ? `<button onclick="hapusLaporan('${row.timestamp}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">Hapus</button>` 
             : `<span class="text-slate-400">-</span>`;
