@@ -190,39 +190,44 @@
     <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-md space-y-6">
       <div class="flex items-center justify-between border-b border-slate-700 pb-3">
         <h2 class="text-lg font-bold flex items-center gap-2">
-          📊 Analisis Akumulasi Aktual & Rincian PSM per Periode
+          📊 Analisis Akumulasi Aktual, GAP & Rincian PSM per Periode
         </h2>
         <span id="badgeSisaHari" class="text-xs bg-blue-600 px-2.5 py-1 rounded-full font-medium">Menghitung hari...</span>
       </div>
 
-      <!-- Akumulasi Total Actual -->
+      <!-- Akumulasi Total Actual & GAP -->
       <div>
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Akumulasi Total Aktual Keseluruhan</p>
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Akumulasi Total Aktual vs Target s.d. Hari Ini (2 Shift/Hari)</p>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">Serba Gratis</p>
             <p id="sum_sg" class="text-lg font-bold text-blue-400">0</p>
-            <p class="text-[10px] text-slate-400">Target Tetap per Shift</p>
+            <p class="text-[11px] text-slate-300">Target s.d. Ini: <span id="target_sd_sg" class="font-semibold">0</span></p>
+            <p id="gap_sg" class="text-xs font-bold">GAP: 0</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">PSM (Total Aktif)</p>
             <p id="sum_psm" class="text-lg font-bold text-emerald-400">0</p>
-            <p class="text-[10px] text-slate-400">Target Tetap per Shift</p>
+            <p class="text-[11px] text-slate-300">Target s.d. Ini: <span id="target_sd_psm" class="font-semibold">0</span></p>
+            <p id="gap_psm" class="text-xs font-bold">GAP: 0</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">PWP</p>
             <p id="sum_pwp" class="text-lg font-bold text-amber-400">0</p>
-            <p class="text-[10px] text-slate-400">Target Tetap per Shift</p>
+            <p class="text-[11px] text-slate-300">Target s.d. Ini: <span id="target_sd_pwp" class="font-semibold">0</span></p>
+            <p id="gap_pwp" class="text-xs font-bold">GAP: 0</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">Seger</p>
             <p id="sum_seger" class="text-lg font-bold text-purple-400">0</p>
-            <p class="text-[10px] text-slate-400">Target Tetap per Shift</p>
+            <p class="text-[11px] text-slate-300">Target s.d. Ini: <span id="target_sd_seger" class="font-semibold">0</span></p>
+            <p id="gap_seger" class="text-xs font-bold">GAP: 0</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 col-span-2 md:col-span-1 text-center space-y-1">
             <p class="text-xs text-slate-400">STD Member</p>
             <p id="sum_member" class="text-lg font-bold text-rose-400">0</p>
-            <p class="text-[10px] text-slate-400">Target Tetap per Shift</p>
+            <p class="text-[11px] text-slate-300">Target s.d. Ini: <span id="target_sd_member" class="font-semibold">0</span></p>
+            <p id="gap_member" class="text-xs font-bold">GAP: 0</p>
           </div>
         </div>
       </div>
@@ -286,7 +291,7 @@
         <div class="border-t border-slate-700 pt-3">
           <p class="font-semibold text-amber-300 text-xs uppercase mb-1">🛠️ Rekomendasi Tindakan Operasional:</p>
           <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-            <li><b>Konsistensi Target Per Shift:</b> Pastikan setiap kasir mencapai target harian/shift yang ditetapkan untuk Serba Gratis, PSM, PWP, Seger, dan STD Member secara konsisten.</li>
+            <li><b>Kejar Kekurangan GAP:</b> Fokuskan penawaran kasir pada kategori yang masih memiliki GAP minus (kekurangan) agar kembali ke jalur target bulanan.</li>
             <li><b>Evaluasi PSM Mingguan:</b> Pantau pencapaian pada Periode 1 hingga 4 agar perolehan mingguan selalu terpantau.</li>
             <li><b>Motivasi Kasir:</b> Berikan apresiasi kepada kasir dengan kontribusi tertinggi dan bimbingan bagi kasir yang masih rendah perolehannya.</li>
           </ul>
@@ -354,6 +359,21 @@
       return String(tglStr).substring(0, 10);
     }
 
+    function renderGap(elIdTargetSd, elIdGap, actual, targetPerShift, hariKe) {
+      const targetSd = (Number(targetPerShift) || 0) * 2 * hariKe;
+      const gap = actual - targetSd;
+      document.getElementById(elIdTargetSd).textContent = targetSd;
+      const gapEl = document.getElementById(elIdGap);
+      if (gap < 0) {
+        gapEl.textContent = `GAP: ${gap} (Kurang ${Math.abs(gap)})`;
+        gapEl.className = "text-xs font-bold text-rose-400";
+      } else {
+        gapEl.textContent = `GAP: +${gap} (Tercapai)`;
+        gapEl.className = "text-xs font-bold text-emerald-400";
+      }
+      return gap;
+    }
+
     async function loadData() {
       try {
         const res = await fetch(SCRIPT_URL);
@@ -366,16 +386,16 @@
         });
 
         const now = new Date();
-        document.getElementById("badgeSisaHari").textContent = `Hari Ke-${now.getDate()} (Bulan Ini)`;
+        const hariKe = now.getDate();
+        document.getElementById("badgeSisaHari").textContent = `Hari Ke-${hariKe} (Bulan Ini)`;
 
         const tbody = document.getElementById("tabelBody");
         if (data.laporan.length === 0) {
           tbody.innerHTML = `<tr><td colspan="18" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
-          document.getElementById("sum_sg").textContent = "0";
-          document.getElementById("sum_psm").textContent = "0";
-          document.getElementById("sum_pwp").textContent = "0";
-          document.getElementById("sum_seger").textContent = "0";
-          document.getElementById("sum_member").textContent = "0";
+          ["sg", "psm", "pwp", "seger", "member"].forEach(k => {
+            document.getElementById(`sum_${k}`).textContent = "0";
+            renderGap(`target_sd_${k}`, `gap_${k}`, 0, t[k], hariKe);
+          });
           document.getElementById("psm_p1").textContent = "0";
           document.getElementById("psm_p2").textContent = "0";
           document.getElementById("psm_p3").textContent = "0";
@@ -435,6 +455,12 @@
         document.getElementById("sum_seger").textContent = totSeger;
         document.getElementById("sum_member").textContent = totMember;
 
+        const gapSg = renderGap("target_sd_sg", "gap_sg", totSg, t.sg, hariKe);
+        const gapPsm = renderGap("target_sd_psm", "gap_psm", totPsm, t.psm, hariKe);
+        const gapPwp = renderGap("target_sd_pwp", "gap_pwp", totPwp, t.pwp, hariKe);
+        const gapSeger = renderGap("target_sd_seger", "gap_seger", totSeger, t.seger, hariKe);
+        const gapMember = renderGap("target_sd_member", "gap_member", totMember, t.member, hariKe);
+
         document.getElementById("psm_p1").textContent = psmP1;
         document.getElementById("psm_p2").textContent = psmP2;
         document.getElementById("psm_p3").textContent = psmP3;
@@ -467,9 +493,20 @@
         document.getElementById("tabelKasirDetail").innerHTML = kasirHtml;
 
         const topKasir = kasirArray.length > 0 ? kasirArray[0].nama : "-";
+        const minusList = [];
+        if (gapSg < 0) minusList.push(`Serba Gratis (${gapSg})`);
+        if (gapPsm < 0) minusList.push(`PSM (${gapPsm})`);
+        if (gapPwp < 0) minusList.push(`PWP (${gapPwp})`);
+        if (gapSeger < 0) minusList.push(`Seger (${gapSeger})`);
+        if (gapMember < 0) minusList.push(`STD Member (${gapMember})`);
+
+        const gapInfo = minusList.length > 0 
+          ? `Kategori yang masih memiliki kekurangan GAP hingga hari ke-${hariKe}: <b class="text-rose-400">${minusList.join(", ")}</b>.`
+          : `<b class="text-emerald-400">Seluruh kategori telah mencapai target akumulasi hingga hari ke-${hariKe}!</b>`;
+
         document.getElementById("analisisGap").innerHTML = `
           Total shift yang telah tercatat adalah <b>${data.laporan.length} shift</b> dengan kontributor penjualan terbanyak dipegang oleh <b>${topKasir}</b>. 
-          Seluruh target (Serba Gratis, PSM, PWP, Seger, dan STD Member) saat ini diatur dalam mode <b>Target Tetap per Shift</b> sehingga memudahkan penghitungan pencapaian harian secara konsisten.
+          ${gapInfo}
         `;
 
         tbody.innerHTML = data.laporan.map((row, index) => {
