@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoring Kasir</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+  <!-- HALAMAN LOGIN -->
+  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-slate-200">
+      <h1 class="text-2xl font-bold text-center text-blue-700 mb-2">Monitoring Kasir</h1>
+      <p class="text-sm text-center text-slate-500 mb-6">Masukkan NIK untuk masuk ke sistem</p>
+      
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">NIK Karyawan</label>
+          <input type="text" id="nikInput" required placeholder="Contoh: 19012226" 
+            class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        </div>
+        <p id="loginError" class="text-red-500 text-sm hidden">NIK tidak terdaftar!</p>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition">
+          Masuk
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- HALAMAN DASHBOARD -->
+  <div id="dashboardSection" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+    <!-- Header -->
+    <header class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <h1 class="text-xl font-bold text-slate-800">Monitoring Target & Actual Kasir</h1>
+        <p class="text-sm text-slate-500">Login sebagai: <span id="userInfo" class="font-semibold text-blue-600"></span></p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="loadData()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium">
+          ↻ Refresh Data
+        </button>
+        <button onclick="logout()" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-medium">
+          Keluar
+        </button>
+      </div>
+    </header>
+
+    <!-- PANEL ADMIN (Hanya muncul untuk 19012226 Abdurrahim) -->
+    <section id="adminPanel" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-xl shadow-sm">
+      <h2 class="text-lg font-bold text-amber-900 mb-1">Panel Admin: Atur / Reset Target Aktif</h2>
+      <p class="text-xs text-amber-700 mb-4">Target di bawah ini adalah sisa target saat ini yang akan otomatis berkurang setiap ada laporan masuk.</p>
+      <form id="targetForm" class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">Serba Gratis</label>
+          <input type="number" id="adm_sg" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">PSM</label>
+          <input type="number" id="adm_psm" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">PWP</label>
+          <input type="number" id="adm_pwp" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">Seger</label>
+          <input type="number" id="adm_seger" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">STD Member</label>
+          <input type="number" id="adm_member" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
+        </div>
+        <button type="submit" id="btnUpdateTarget" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+          Update Target
+        </button>
+      </form>
+    </section>
+
+    <!-- FORM INPUT LAPORAN SHIFT -->
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+      <h2 class="text-lg font-bold text-slate-800 mb-4">Input Laporan Penjualan Shift</h2>
+      <form id="laporanForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
+            <input type="date" id="lap_tanggal" required class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Shift</label>
+            <select id="lap_shift" required class="w-full px-3 py-2 border border-slate-300 rounded-lg">
+              <option value="I">Shift I</option>
+              <option value="II">Shift II</option>
+              <option value="III">Shift III</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 pt-2">
+          <!-- Item 1 -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span>SERBA GRATIS</span>
+              <span>Target: <span id="t_sg" class="text-blue-600">0</span></span>
+            </div>
+            <input type="number" id="act_sg" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
+          </div>
+          <!-- Item 2 -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span>PSM</span>
+              <span>Target: <span id="t_psm" class="text-blue-600">0</span></span>
+            </div>
+            <input type="number" id="act_psm" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
+          </div>
+          <!-- Item 3 -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span>PWP</span>
+              <span>Target: <span id="t_pwp" class="text-blue-600">0</span></span>
+            </div>
+            <input type="number" id="act_pwp" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
+          </div>
+          <!-- Item 4 -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span>SEGER</span>
+              <span>Target: <span id="t_seger" class="text-blue-600">0</span></span>
+            </div>
+            <input type="number" id="act_seger" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
+          </div>
+          <!-- Item 5 -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+              <span>STD MEMBER</span>
+              <span>Target: <span id="t_member" class="text-blue-600">0</span></span>
+            </div>
+            <input type="number" id="act_member" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
+          </div>
+        </div>
+
+        <button type="submit" id="btnSubmitLaporan" class="w-full md:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+          Simpan Laporan Shift
+        </button>
+      </form>
+    </section>
+
+    <!-- TABEL REKAP MONITORING -->
+    <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+      <h2 class="text-lg font-bold text-slate-800 mb-4">Riwayat Laporan Kasir</h2>
+      <table class="w-full text-xs text-center border-collapse border border-slate-300 min-w-[900px]">
+        <thead class="bg-slate-200 text-slate-800 font-bold">
+          <tr>
+            <th rowspan="2" class="border border-slate-300 p-2">TGL / SHIFT</th>
+            <th rowspan="2" class="border border-slate-300 p-2">KASIR</th>
+            <th colspan="3" class="border border-slate-300 p-1.5 bg-blue-100">SERBA GRATIS</th>
+            <th colspan="3" class="border border-slate-300 p-1.5 bg-emerald-100">PSM</th>
+            <th colspan="3" class="border border-slate-300 p-1.5 bg-amber-100">PWP</th>
+            <th colspan="3" class="border border-slate-300 p-1.5 bg-purple-100">SEGER</th>
+            <th colspan="3" class="border border-slate-300 p-1.5 bg-rose-100">STD MEMBER</th>
+          </tr>
+          <tr class="bg-slate-100">
+            <th class="border border-slate-300 p-1">TARGET</th><th class="border border-slate-300 p-1">ACTUAL</th><th class="border border-slate-300 p-1">ACV %</th>
+            <th class="border border-slate-300 p-1">TARGET</th><th class="border border-slate-300 p-1">ACTUAL</th><th class="border border-slate-300 p-1">ACV %</th>
+            <th class="border border-slate-300 p-1">TARGET</th><th class="border border-slate-300 p-1">ACTUAL</th><th class="border border-slate-300 p-1">ACV %</th>
+            <th class="border border-slate-300 p-1">TARGET</th><th class="border border-slate-300 p-1">ACTUAL</th><th class="border border-slate-300 p-1">ACV %</th>
+            <th class="border border-slate-300 p-1">TARGET</th><th class="border border-slate-300 p-1">ACTUAL</th><th class="border border-slate-300 p-1">ACV %</th>
+          </tr>
+        </thead>
+        <tbody id="tabelBody" class="divide-y divide-slate-200">
+          <tr><td colspan="17" class="p-4 text-slate-500">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    // URL Web App Apps Script Anda yang sudah terhubung ke Kolom A-T
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhEcmr9hpwSBktHnMBpfq3JvStjvhyZnKi3WRDZdaoHSgm-5yJo2hOqKmWsZH5sysYLg/exec";
+
+    const USERS = {
+      "19012226": { nama: "Abdurrahim", role: "admin" },
+      "21063610": { nama: "Dini", role: "kasir" },
+      "22069357": { nama: "Anshor", role: "kasir" },
+      "26012274": { nama: "Shinta", role: "kasir" },
+      "26014456": { nama: "Sholahuddin", role: "kasir" },
+      "26014513": { nama: "Mudzalifah", role: "kasir" }
+    };
+
+    let currentUser = null;
+
+    // Set default tanggal hari ini
+    document.getElementById("lap_tanggal").valueAsDate = new Date();
+
+    // Cek sesi login
+    const savedNik = localStorage.getItem("kasir_nik");
+    if (savedNik && USERS[savedNik]) {
+      loginSuccess(savedNik);
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nik = document.getElementById("nikInput").value.trim();
+      if (USERS[nik]) {
+        localStorage.setItem("kasir_nik", nik);
+        loginSuccess(nik);
+      } else {
+        document.getElementById("loginError").classList.remove("hidden");
+      }
+    });
+
+    function loginSuccess(nik) {
+      currentUser = { nik, ...USERS[nik] };
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("dashboardSection").classList.remove("hidden");
+      document.getElementById("userInfo").textContent = `${currentUser.nama} (${currentUser.nik}) - ${currentUser.role.toUpperCase()}`;
+      
+      if (currentUser.role === "admin") {
+        document.getElementById("adminPanel").classList.remove("hidden");
+      } else {
+        document.getElementById("adminPanel").classList.add("hidden");
+      }
+      loadData();
+    }
+
+    function logout() {
+      localStorage.removeItem("kasir_nik");
+      location.reload();
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const data = await res.json();
+        
+        // Tampilkan Target Aktif
+        const t = data.targets;
+        ["sg", "psm", "pwp", "seger", "member"].forEach(k => {
+          document.getElementById(`t_${k}`).textContent = t[k];
+          document.getElementById(`adm_${k}`).value = t[k];
+        });
+
+        // Tampilkan Tabel Laporan
+        const tbody = document.getElementById("tabelBody");
+        if (data.laporan.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="17" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.laporan.map(row => `
+          <tr class="hover:bg-slate-50">
+            <td class="border border-slate-300 p-2 font-medium">${row.tanggal}<br><span class="text-blue-600">Shift ${row.shift}</span></td>
+            <td class="border border-slate-300 p-2 font-medium">${row.nama}</td>
+            <td class="border border-slate-300 p-1.5">${row.sg.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.sg.actual}</td><td class="border border-slate-300 p-1.5 text-blue-700 font-semibold">${row.sg.acv}</td>
+            <td class="border border-slate-300 p-1.5">${row.psm.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.psm.actual}</td><td class="border border-slate-300 p-1.5 text-emerald-700 font-semibold">${row.psm.acv}</td>
+            <td class="border border-slate-300 p-1.5">${row.pwp.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.pwp.actual}</td><td class="border border-slate-300 p-1.5 text-amber-700 font-semibold">${row.pwp.acv}</td>
+            <td class="border border-slate-300 p-1.5">${row.seger.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.seger.actual}</td><td class="border border-slate-300 p-1.5 text-purple-700 font-semibold">${row.seger.acv}</td>
+            <td class="border border-slate-300 p-1.5">${row.member.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.member.actual}</td><td class="border border-slate-300 p-1.5 text-rose-700 font-semibold">${row.member.acv}</td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        alert("Gagal memuat data dari Spreadsheet. Pastikan koneksi internet stabil.");
+      }
+    }
+
+    // Admin Update Target
+    document.getElementById("targetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnUpdateTarget");
+      btn.disabled = true; btn.textContent = "Menyimpan...";
+
+      const payload = {
+        action: "updateTarget",
+        nik: currentUser.nik,
+        targets: {
+          sg: document.getElementById("adm_sg").value,
+          psm: document.getElementById("adm_psm").value,
+          pwp: document.getElementById("adm_pwp").value,
+          seger: document.getElementById("adm_seger").value,
+          member: document.getElementById("adm_member").value
+        }
+      };
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+      const result = await res.json();
+      alert(result.message);
+      btn.disabled = false; btn.textContent = "Update Target";
+      loadData();
+    });
+
+    // Submit Laporan Shift
+    document.getElementById("laporanForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmitLaporan");
+      btn.disabled = true; btn.textContent = "Mengirim...";
+
+      const payload = {
+        action: "submitLaporan",
+        nik: currentUser.nik,
+        nama: currentUser.nama,
+        tanggal: document.getElementById("lap_tanggal").value,
+        shift: document.getElementById("lap_shift").value,
+        actual: {
+          sg: document.getElementById("act_sg").value,
+          psm: document.getElementById("act_psm").value,
+          pwp: document.getElementById("act_pwp").value,
+          seger: document.getElementById("act_seger").value,
+          member: document.getElementById("act_member").value
+        }
+      };
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+      const result = await res.json();
+      alert(result.message);
+      
+      document.getElementById("laporanForm").reset();
+      document.getElementById("lap_tanggal").valueAsDate = new Date();
+      btn.disabled = false; btn.textContent = "Simpan Laporan Shift";
+      loadData();
+    });
+  </script>
+</body>
+</html>
