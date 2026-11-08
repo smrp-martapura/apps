@@ -52,7 +52,7 @@
     <!-- PANEL ADMIN (Hanya muncul untuk 19012226 Abdurrahim) -->
     <section id="adminPanel" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-xl shadow-sm">
       <h2 class="text-lg font-bold text-amber-900 mb-1">Panel Admin: Atur / Reset Target Aktif</h2>
-      <p class="text-xs text-amber-700 mb-4">PWP (Periode 1-15 & 16-31), PSM (Mingguan), Seger, STD Member, & Serba Gratis akan otomatis berkurang setiap ada laporan masuk.</p>
+      <p class="text-xs text-amber-700 mb-4">Target di bawah ini akan otomatis berkurang setiap ada laporan masuk dari kasir.</p>
       <form id="targetForm" class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
         <div>
           <label class="block text-xs font-semibold text-amber-900 mb-1">Serba Gratis</label>
@@ -111,7 +111,7 @@
           <!-- Item 2 -->
           <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>PSM (Mingguan)</span>
+              <span>PSM</span>
               <span>Sisa Target: <span id="t_psm" class="text-blue-600">0</span></span>
             </div>
             <input type="number" id="act_psm" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
@@ -119,7 +119,7 @@
           <!-- Item 3 -->
           <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-              <span>PWP (Periode)</span>
+              <span>PWP</span>
               <span>Sisa Target: <span id="t_pwp" class="text-blue-600">0</span></span>
             </div>
             <input type="number" id="act_pwp" min="0" required placeholder="Actual" class="w-full px-3 py-2 border border-slate-300 rounded-md bg-white">
@@ -178,7 +178,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhEcmr9hpwSBktHnMBpfq3JvStjvhyZnKi3WRDZdaoHSgm-5yJo2hOqKmWsZH5sysYLg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbys8B6e2bl3_5qE0MUFv52dA8TRn7Zqa6VtK8wtElMN_XQhXrMBfPxGaIT7UuQmPxIKmg/exec";
 
     const USERS = {
       "19012226": { nama: "Abdurrahim", role: "admin" },
@@ -298,7 +298,7 @@
         actual: {
           sg: document.getElementById("act_sg").value,
           psm: document.getElementById("act_psm").value,
-      pwp: document.getElementById("act_pwp").value,
+          pwp: document.getElementById("act_pwp").value,
           seger: document.getElementById("act_seger").value,
           member: document.getElementById("act_member").value
         }
