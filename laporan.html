@@ -231,6 +231,15 @@
       location.reload();
     }
 
+    // Fungsi format ACV: mengubah desimal (0.79 -> 79%, 0.03 -> 3%)
+    function formatAcv(val) {
+      if (val === null || val === undefined || val === "") return "0%";
+      if (typeof val === "string" && val.includes("%")) return val;
+      const num = Number(val);
+      if (isNaN(num)) return val;
+      return Math.round(num * 100) + "%";
+    }
+
     async function loadData() {
       try {
         const res = await fetch(SCRIPT_URL);
@@ -258,11 +267,11 @@
               <td class="border border-slate-300 p-2">${deleteBtn}</td>
               <td class="border border-slate-300 p-2 font-medium">${row.tanggal}<br><span class="text-blue-600">Shift ${row.shift}</span></td>
               <td class="border border-slate-300 p-2 font-medium">${row.nama}</td>
-              <td class="border border-slate-300 p-1.5">${row.sg.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.sg.actual}</td><td class="border border-slate-300 p-1.5 text-blue-700 font-semibold">${row.sg.acv}</td>
-              <td class="border border-slate-300 p-1.5">${row.psm.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.psm.actual}</td><td class="border border-slate-300 p-1.5 text-emerald-700 font-semibold">${row.psm.acv}</td>
-              <td class="border border-slate-300 p-1.5">${row.pwp.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.pwp.actual}</td><td class="border border-slate-300 p-1.5 text-amber-700 font-semibold">${row.pwp.acv}</td>
-              <td class="border border-slate-300 p-1.5">${row.seger.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.seger.actual}</td><td class="border border-slate-300 p-1.5 text-purple-700 font-semibold">${row.seger.acv}</td>
-              <td class="border border-slate-300 p-1.5">${row.member.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.member.actual}</td><td class="border border-slate-300 p-1.5 text-rose-700 font-semibold">${row.member.acv}</td>
+              <td class="border border-slate-300 p-1.5">${row.sg.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.sg.actual}</td><td class="border border-slate-300 p-1.5 text-blue-700 font-semibold">${formatAcv(row.sg.acv)}</td>
+              <td class="border border-slate-300 p-1.5">${row.psm.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.psm.actual}</td><td class="border border-slate-300 p-1.5 text-emerald-700 font-semibold">${formatAcv(row.psm.acv)}</td>
+              <td class="border border-slate-300 p-1.5">${row.pwp.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.pwp.actual}</td><td class="border border-slate-300 p-1.5 text-amber-700 font-semibold">${formatAcv(row.pwp.acv)}</td>
+              <td class="border border-slate-300 p-1.5">${row.seger.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.seger.actual}</td><td class="border border-slate-300 p-1.5 text-purple-700 font-semibold">${formatAcv(row.seger.acv)}</td>
+              <td class="border border-slate-300 p-1.5">${row.member.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.member.actual}</td><td class="border border-slate-300 p-1.5 text-rose-700 font-semibold">${formatAcv(row.member.acv)}</td>
             </tr>
           `;
         }).join("");
