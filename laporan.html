@@ -52,43 +52,41 @@
       </div>
     </header>
 
-    <!-- PANEL ADMIN (UPDATE TARGET SATU PER SATU) -->
+    <!-- PANEL ADMIN -->
     <section id="adminPanel" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-xl shadow-sm space-y-4">
       <div>
-        <h2 class="text-lg font-bold text-amber-900 mb-1">Panel Admin: Update Target Satu Per Satu</h2>
-        <p class="text-xs text-amber-700">PSM (Per Periode Mingguan: 1-7, 8-15, 16-23, 24-Akhir). SG/PWP/Seger (1-15 & 16-31). Member (Bulanan).</p>
+        <h2 class="text-lg font-bold text-amber-900 mb-1">Panel Admin: Atur / Reset Target Aktif</h2>
+        <p class="text-xs text-amber-700">Serba Gratis, PSM, & PWP akan berkurang otomatis. Seger & STD Member tetap per shift.</p>
       </div>
       
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
-        <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
-          <label class="block text-xs font-bold text-amber-900">Serba Gratis (1-15 / 16-31)</label>
-          <input type="number" id="adm_sg" placeholder="Nilai baru" class="w-full px-3 py-1.5 border border-amber-300 rounded text-sm">
-          <button onclick="updateTargetSingle('sg', document.getElementById('adm_sg').value)" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold py-1.5 rounded">Update SG</button>
+      <form id="targetForm" class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">Serba Gratis</label>
+          <input type="number" id="adm_sg" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
-        <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
-          <label class="block text-xs font-bold text-amber-900">PSM (Mingguan)</label>
-          <input type="number" id="adm_psm" placeholder="Nilai baru" class="w-full px-3 py-1.5 border border-amber-300 rounded text-sm">
-          <button onclick="updateTargetSingle('psm', document.getElementById('adm_psm').value)" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold py-1.5 rounded">Update PSM</button>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">PSM</label>
+          <input type="number" id="adm_psm" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
-        <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
-          <label class="block text-xs font-bold text-amber-900">PWP (1-15 / 16-31)</label>
-          <input type="number" id="adm_pwp" placeholder="Nilai baru" class="w-full px-3 py-1.5 border border-amber-300 rounded text-sm">
-          <button onclick="updateTargetSingle('pwp', document.getElementById('adm_pwp').value)" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold py-1.5 rounded">Update PWP</button>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">PWP</label>
+          <input type="number" id="adm_pwp" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
-        <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
-          <label class="block text-xs font-bold text-amber-900">Seger (1-15 / 16-31)</label>
-          <input type="number" id="adm_seger" placeholder="Nilai baru" class="w-full px-3 py-1.5 border border-amber-300 rounded text-sm">
-          <button onclick="updateTargetSingle('seger', document.getElementById('adm_seger').value)" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold py-1.5 rounded">Update Seger</button>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">Seger</label>
+          <input type="number" id="adm_seger" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
-        <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-2">
-          <label class="block text-xs font-bold text-amber-900">STD Member (Bulanan)</label>
-          <input type="number" id="adm_member" placeholder="Nilai baru" class="w-full px-3 py-1.5 border border-amber-300 rounded text-sm">
-          <button onclick="updateTargetSingle('member', document.getElementById('adm_member').value)" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold py-1.5 rounded">Update Member</button>
+        <div>
+          <label class="block text-xs font-semibold text-amber-900 mb-1">STD Member</label>
+          <input type="number" id="adm_member" required class="w-full px-3 py-2 border border-amber-300 rounded-lg bg-white">
         </div>
-      </div>
+        <button type="submit" id="btnUpdateTarget" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+          Update Target
+        </button>
+      </form>
 
       <div class="pt-3 border-t border-amber-200 flex flex-wrap justify-between items-center gap-2">
-        <p class="text-xs text-amber-800">Arsipkan seluruh data bulan ini ke tab Rekap_Bulanan secara utuh saat akhir bulan.</p>
+        <p class="text-xs text-amber-800">Arsipkan seluruh data bulan ini ke tab Rekap_Bulanan secara utuh.</p>
         <button onclick="prosesClosing()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-lg transition shadow-sm">
           📁 Proses Closing Bulanan
         </button>
@@ -186,71 +184,43 @@
       </table>
     </section>
 
-    <!-- PANEL ANALISIS MENDALAM & AKUMULASI + PSM PER PERIODE -->
+    <!-- PANEL ANALISIS MENDALAM & AKUMULASI (DI BAWAH) -->
     <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-md space-y-6">
       <div class="flex items-center justify-between border-b border-slate-700 pb-3">
         <h2 class="text-lg font-bold flex items-center gap-2">
-          📊 Analisis Akumulasi, GAP & Rincian PSM per Periode Mingguan
+          📊 Analisis Mendalam & Akumulasi Beserta GAP
         </h2>
-        <span id="badgeSisaHari" class="text-xs bg-blue-600 px-2.5 py-1 rounded-full font-medium">Menghitung hari...</span>
+        <span class="text-xs bg-blue-600 px-2.5 py-1 rounded-full font-medium">SMRP Martapura</span>
       </div>
 
-      <!-- Akumulasi Total Actual + GAP & Sisa Hari -->
+      <!-- Akumulasi Total Actual + GAP -->
       <div>
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Akumulasi Aktual, Sisa GAP Target & Sisa Hari Periode</p>
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Akumulasi Actual & Keterangan GAP Sisa Target</p>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">Serba Gratis</p>
             <p id="sum_sg" class="text-lg font-bold text-blue-400">0</p>
             <p id="gap_sg" class="text-[11px] text-amber-300 font-medium">GAP: 0</p>
-            <p id="sisaHariSg" class="text-[10px] text-slate-400">Sisa: - hari</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
-            <p class="text-xs text-slate-400">PSM (Total Aktif)</p>
+            <p class="text-xs text-slate-400">PSM</p>
             <p id="sum_psm" class="text-lg font-bold text-emerald-400">0</p>
             <p id="gap_psm" class="text-[11px] text-amber-300 font-medium">GAP: 0</p>
-            <p id="sisaHariPsm" class="text-[10px] text-slate-400">Sisa: - hari</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">PWP</p>
             <p id="sum_pwp" class="text-lg font-bold text-amber-400">0</p>
             <p id="gap_pwp" class="text-[11px] text-amber-300 font-medium">GAP: 0</p>
-            <p id="sisaHariPwp" class="text-[10px] text-slate-400">Sisa: - hari</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 text-center space-y-1">
             <p class="text-xs text-slate-400">Seger</p>
             <p id="sum_seger" class="text-lg font-bold text-purple-400">0</p>
-            <p class="text-[11px] text-slate-400">Periode 1-15 / 16-31</p>
-            <p id="sisaHariSeger" class="text-[10px] text-slate-400">Sisa: - hari</p>
+            <p class="text-[11px] text-slate-400">Tetap per Shift</p>
           </div>
           <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 col-span-2 md:col-span-1 text-center space-y-1">
             <p class="text-xs text-slate-400">STD Member</p>
             <p id="sum_member" class="text-lg font-bold text-rose-400">0</p>
-            <p class="text-[11px] text-slate-400">Bulanan</p>
-            <p id="sisaHariMember" class="text-[10px] text-slate-400">Sisa: - hari</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- AKUMULASI PSM PER PERIODE MINGGUAN (1-7, 8-15, 16-23, 24-Akhir) -->
-      <div class="bg-slate-800/60 p-4 rounded-lg border border-slate-700 space-y-3">
-        <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📅 Rincian Akumulasi Actual PSM Per Periode Mingguan</p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-          <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
-            <p class="text-[11px] text-slate-400 font-medium">Periode 1 (Tgl 1 - 7)</p>
-            <p id="psm_p1" class="text-base font-bold text-emerald-300 mt-1">0</p>
-          </div>
-          <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
-            <p class="text-[11px] text-slate-400 font-medium">Periode 2 (Tgl 8 - 15)</p>
-            <p id="psm_p2" class="text-base font-bold text-emerald-300 mt-1">0</p>
-          </div>
-          <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
-            <p class="text-[11px] text-slate-400 font-medium">Periode 3 (Tgl 16 - 23)</p>
-            <p id="psm_p3" class="text-base font-bold text-emerald-300 mt-1">0</p>
-          </div>
-          <div class="bg-slate-900/60 p-3 rounded border border-slate-700">
-            <p class="text-[11px] text-slate-400 font-medium">Periode 4 (Tgl 24 - Akhir)</p>
-            <p id="psm_p4" class="text-base font-bold text-emerald-300 mt-1">0</p>
+            <p class="text-[11px] text-slate-400">Tetap per Shift</p>
           </div>
         </div>
       </div>
@@ -282,18 +252,18 @@
       <!-- Solusi & Rekomendasi Langkah Kedepan -->
       <div class="bg-slate-800/80 p-4 rounded-lg border border-slate-700 space-y-3">
         <div class="flex items-center justify-between">
-          <p class="font-semibold text-white text-sm">💡 Evaluasi & Solusi Strategis Berdasarkan Sisa Hari</p>
+          <p class="font-semibold text-white text-sm">💡 Evaluasi & Solusi Strategis Akhir Bulan</p>
           <span class="text-xs px-2 py-0.5 rounded font-bold bg-blue-500 text-white">Aktif</span>
         </div>
         <p id="analisisGap" class="text-xs md:text-sm text-slate-300 leading-relaxed">
-          Menganalisis sisa hari target Serba Gratis/PWP/Seger, siklus mingguan PSM (Periode 1 s.d 4), dan performa kasir...
+          Menganalisis pencapaian kasir dan proyeksi target...
         </p>
         <div class="border-t border-slate-700 pt-3">
           <p class="font-semibold text-amber-300 text-xs uppercase mb-1">🛠️ Rekomendasi Tindakan Operasional:</p>
           <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-            <li><b>Evaluasi PSM Per Periode:</b> Pantau perolehan actual pada Periode 1 (1-7), Periode 2 (8-15), Periode 3 (16-23), dan Periode 4 (24-Akhir) agar tercapai tepat waktu setiap minggunya.</li>
-            <li><b>Perhatian SG, PWP & Seger:</b> Perhatikan batas tanggal 15 untuk gelombang pertama dan tanggal 30/31 untuk gelombang kedua.</li>
-            <li><b>Aktivasi Kasir:</b> Dorong kasir dengan perolehan terendah untuk lebih proaktif menawarkan item promo kepada konsumen.</li>
+            <li>Memberikan motivasi dan evaluasi khusus kepada kasir dengan kontribusi terendah agar lebih aktif menawarkan item promo ke pelanggan.</li>
+            <li>Memastikan kasir pada Shift 1 dan Shift 2 mengontrol sisa target Serba Gratis, PSM, dan PWP agar tercapai secara proporsional setiap harinya.</li>
+            <li>Memaksimalkan penawaran member dan produk Seger pada jam-jam sibuk kunjungan konsumen.</li>
           </ul>
         </div>
       </div>
@@ -322,7 +292,6 @@
       if (USERS[nik]) {
         loginSuccess(nik);
       } else {
-        document.getElementById("loginError").classList.add("hidden"); // fixed minor toggle
         document.getElementById("loginError").classList.remove("hidden");
       }
     });
@@ -360,55 +329,6 @@
       return String(tglStr).substring(0, 10);
     }
 
-    function hitungSisaHari() {
-      const inputDateVal = document.getElementById("lap_tanggal").value;
-      const now = inputDateVal ? new Date(inputDateVal) : new Date();
-      const tgl = now.getDate();
-      const bulan = now.getMonth();
-      const tahun = now.getFullYear();
-
-      const totalHariBulanIni = new Date(tahun, bulan + 1, 0).getDate();
-
-      // SG, PWP, Seger (Periode Tgl 1-15 & 16-Akhir)
-      let sisaSgPwpSeger = 0;
-      let infoPeriode = "";
-      if (tgl <= 15) {
-        sisaSgPwpSeger = 15 - tgl;
-        infoPeriode = "Sisa s.d Tgl 15";
-      } else {
-        sisaSgPwpSeger = totalHariBulanIni - tgl;
-        infoPeriode = "Sisa s.d Akhir Bln";
-      }
-
-      // PSM Periode Mingguan (1-7, 8-15, 16-23, 24-Akhir)
-      let sisaPsm = 0;
-      let infoPsm = "";
-      if (tgl <= 7) {
-        sisaPsm = 7 - tgl;
-        infoPsm = "Periode 1 (Tgl 1-7)";
-      } else if (tgl <= 15) {
-        sisaPsm = 15 - tgl;
-        infoPsm = "Periode 2 (Tgl 8-15)";
-      } else if (tgl <= 23) {
-        sisaPsm = 23 - tgl;
-        infoPsm = "Periode 3 (Tgl 16-23)";
-      } else {
-        sisaPsm = totalHariBulanIni - tgl;
-        infoPsm = "Periode 4 (Tgl 24-Akhir)";
-      }
-
-      const sisaMember = totalHariBulanIni - tgl;
-
-      return {
-        sisaSgPwpSeger,
-        infoPeriode,
-        sisaPsm,
-        infoPsm,
-        sisaMember,
-        tglSekarang: tgl
-      };
-    }
-
     async function loadData() {
       try {
         const res = await fetch(SCRIPT_URL);
@@ -420,15 +340,6 @@
           document.getElementById(`adm_${k}`).value = t[k];
         });
 
-        const hariInfo = hitungSisaHari();
-        document.getElementById("badgeSisaHari").textContent = `Hari Ke-${hariInfo.tglSekarang} (Bulan Ini)`;
-
-        document.getElementById("sisaHariSg").textContent = `Sisa: ${hariInfo.sisaSgPwpSeger} hari (${hariInfo.infoPeriode})`;
-        document.getElementById("sisaHariPwp").textContent = `Sisa: ${hariInfo.sisaSgPwpSeger} hari (${hariInfo.infoPeriode})`;
-        document.getElementById("sisaHariSeger").textContent = `Sisa: ${hariInfo.sisaSgPwpSeger} hari (${hariInfo.infoPeriode})`;
-        document.getElementById("sisaHariPsm").textContent = `Sisa: ${hariInfo.sisaPsm} hari (${hariInfo.infoPsm})`;
-        document.getElementById("sisaHariMember").textContent = `Sisa: ${hariInfo.sisaMember} hari (s.d Akhir Bln)`;
-
         const tbody = document.getElementById("tabelBody");
         if (data.laporan.length === 0) {
           tbody.innerHTML = `<tr><td colspan="18" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
@@ -437,10 +348,6 @@
           document.getElementById("sum_pwp").textContent = "0";
           document.getElementById("sum_seger").textContent = "0";
           document.getElementById("sum_member").textContent = "0";
-          document.getElementById("psm_p1").textContent = "0";
-          document.getElementById("psm_p2").textContent = "0";
-          document.getElementById("psm_p3").textContent = "0";
-          document.getElementById("psm_p4").textContent = "0";
           document.getElementById("gap_sg").textContent = `GAP: ${t.sg}`;
           document.getElementById("gap_psm").textContent = `GAP: ${t.psm}`;
           document.getElementById("gap_pwp").textContent = `GAP: ${t.pwp}`;
@@ -449,8 +356,8 @@
           return;
         }
 
+        // Variabel akumulasi & statistik kasir
         let totSg = 0, totPsm = 0, totPwp = 0, totSeger = 0, totMember = 0;
-        let psmP1 = 0, psmP2 = 0, psmP3 = 0, psmP4 = 0;
         let kasirStats = {};
 
         data.laporan.forEach(row => {
@@ -467,21 +374,6 @@
           totSeger += actSeger;
           totMember += actMember;
 
-          // Hitung pemisahan PSM Berdasarkan Tanggal Laporan
-          const tglStr = String(row.tanggal).substring(0, 10); // Format YYYY-MM-DD
-          const dObj = new Date(tglStr);
-          const hariLaporan = !isNaN(dObj) ? dObj.getDate() : 1;
-
-          if (hariLaporan >= 1 && hariLaporan <= 7) {
-            psmP1 += actPsm;
-          } else if (hariLaporan >= 8 && hariLaporan <= 15) {
-            psmP2 += actPsm;
-          } else if (hariLaporan >= 16 && hariLaporan <= 23) {
-            psmP3 += actPsm;
-          } else {
-            psmP4 += actPsm;
-          }
-
           if (!kasirStats[namaKasir]) {
             kasirStats[namaKasir] = { sg: 0, psm: 0, pwp: 0, seger: 0, member: 0, shiftCount: 0 };
           }
@@ -493,22 +385,18 @@
           kasirStats[namaKasir].shiftCount += 1;
         });
 
+        // Tampilkan total akumulasi & GAP
         document.getElementById("sum_sg").textContent = totSg;
         document.getElementById("sum_psm").textContent = totPsm;
         document.getElementById("sum_pwp").textContent = totPwp;
         document.getElementById("sum_seger").textContent = totSeger;
         document.getElementById("sum_member").textContent = totMember;
 
-        // Tampilkan Akumulasi PSM Per Periode
-        document.getElementById("psm_p1").textContent = psmP1;
-        document.getElementById("psm_p2").textContent = psmP2;
-        document.getElementById("psm_p3").textContent = psmP3;
-        document.getElementById("psm_p4").textContent = psmP4;
-
         document.getElementById("gap_sg").textContent = `GAP (Sisa): ${t.sg}`;
-        document.getElementById("gap_psm").textContent = `GAP Periode Ini: ${t.psm}`;
+        document.getElementById("gap_psm").textContent = `GAP (Sisa): ${t.psm}`;
         document.getElementById("gap_pwp").textContent = `GAP (Sisa): ${t.pwp}`;
 
+        // Render Tabel Rincian Per Kasir
         let kasirArray = Object.keys(kasirStats).map(nama => ({
           nama: nama,
           ...kasirStats[nama],
@@ -535,12 +423,12 @@
         });
         document.getElementById("tabelKasirDetail").innerHTML = kasirHtml;
 
+        // Analisis teks kesimpulan
         const topKasir = kasirArray.length > 0 ? kasirArray[0].nama : "-";
+        const lowKasir = kasirArray.length > 0 ? kasirArray[kasirArray.length - 1].nama : "-";
         document.getElementById("analisisGap").innerHTML = `
-          Saat ini berada di <b>Hari ke-${hariInfo.tglSekarang}</b> bulan ini. 
-          Sisa hari untuk target <b>Serba Gratis, PWP & Seger</b> adalah <b>${hariInfo.sisaSgPwpSeger} hari lagi</b> (${hariInfo.infoPeriode}). 
-          Untuk siklus <b>PSM Mingguan</b>, saat ini masuk dalam <b>${hariInfo.infoPsm}</b> (tersisa ${hariInfo.sisaPsm} hari). 
-          Kontribusi kasir tertinggi saat ini dipimpin oleh <b>${topKasir}</b>.
+          Hingga saat ini, total <b>${data.laporan.length} shift</b> telah terlaporkan. Kontributor item penjualan tertinggi dipegang oleh <b>${topKasir}</b>, sementara <b>${lowKasir}</b> mencatatkan total perolehan terendah dan memerlukan dorongan ekstra. 
+          Sisa target (GAP) yang harus diselesaikan sampai akhir bulan meliputi Serba Gratis (${t.sg} item), PSM (${t.psm} item), dan PWP (${t.pwp} item).
         `;
 
         tbody.innerHTML = data.laporan.map((row, index) => {
@@ -563,33 +451,6 @@
         }).join("");
       } catch (err) {
         alert("Gagal memuat data dari Spreadsheet.");
-      }
-    }
-
-    async function updateTargetSingle(category, value) {
-      if (value === "" || value === null) {
-        alert("Masukkan nilai target terlebih dahulu!");
-        return;
-      }
-      if (!confirm(`Apakah Anda yakin ingin memperbarui target ${category.toUpperCase()} menjadi ${value}?`)) return;
-
-      const targetsPayload = {};
-      targetsPayload[category] = value;
-
-      const payload = {
-        action: "updateTarget",
-        nik: currentUser.nik,
-        targets: targetsPayload
-      };
-
-      try {
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const result = await res.json();
-        alert(result.message);
-        document.getElementById(`adm_${category}`).value = "";
-        loadData();
-      } catch (err) {
-        alert("Gagal memperbarui target.");
       }
     }
 
@@ -629,6 +490,30 @@
         alert("Gagal memproses closing bulanan.");
       }
     }
+
+    document.getElementById("targetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("btnUpdateTarget");
+      btn.disabled = true; btn.textContent = "Menyimpan...";
+
+      const payload = {
+        action: "updateTarget",
+        nik: currentUser.nik,
+        targets: {
+          sg: document.getElementById("adm_sg").value,
+          psm: document.getElementById("adm_psm").value,
+          pwp: document.getElementById("adm_pwp").value,
+          seger: document.getElementById("adm_seger").value,
+          member: document.getElementById("adm_member").value
+        }
+      };
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+      const result = await res.json();
+      alert(result.message);
+      btn.disabled = false; btn.textContent = "Update Target";
+      loadData();
+    });
 
     document.getElementById("laporanForm").addEventListener("submit", async (e) => {
       e.preventDefault();
