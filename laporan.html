@@ -241,12 +241,24 @@
       location.reload();
     }
 
+    // Fungsi format ACV: mengubah desimal (0.79 -> 79%)
     function formatAcv(val) {
       if (val === null || val === undefined || val === "") return "0%";
       if (typeof val === "string" && val.includes("%")) return val;
       const num = Number(val);
       if (isNaN(num)) return val;
       return Math.round(num * 100) + "%";
+    }
+
+    // Fungsi format Tanggal agar akurat tidak bergeser zona waktu
+    function formatTanggal(tglStr) {
+      if (!tglStr) return "";
+      const d = new Date(tglStr);
+      if (isNaN(d)) return tglStr;
+      const tahun = d.getFullYear();
+      const bulan = String(d.getMonth() + 1).padStart(2, '0');
+      const hari = String(d.getDate()).padStart(2, '0');
+      return `${tahun}-${bulan}-${hari}`;
     }
 
     async function loadData() {
@@ -274,7 +286,7 @@
           return `
             <tr class="hover:bg-slate-50">
               <td class="border border-slate-300 p-2">${deleteBtn}</td>
-              <td class="border border-slate-300 p-2 font-medium">${row.tanggal}<br><span class="text-blue-600">Shift ${row.shift}</span></td>
+              <td class="border border-slate-300 p-2 font-medium">${formatTanggal(row.tanggal)}<br><span class="text-blue-600">Shift ${row.shift}</span></td>
               <td class="border border-slate-300 p-2 font-medium">${row.nama}</td>
               <td class="border border-slate-300 p-1.5">${row.sg.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.sg.actual}</td><td class="border border-slate-300 p-1.5 text-blue-700 font-semibold">${formatAcv(row.sg.acv)}</td>
               <td class="border border-slate-300 p-1.5">${row.psm.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.psm.actual}</td><td class="border border-slate-300 p-1.5 text-emerald-700 font-semibold">${formatAcv(row.psm.acv)}</td>
