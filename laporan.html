@@ -192,7 +192,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymOAw75r5YFFXIreKep5a1pniAN15MCxfuHbcxRQWX7RWb5X72z84xWH4fGWelVwwKFw/exec";
+    // URL Web App Google Apps Script terbaru
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRLcEnw-Lp3ddKt-pxEftytYFl96uChhCVGhwZp6UZL3yjxtOIifWM8yGDvtxGgEQSSA/exec";
 
     const USERS = {
       "19012226": { nama: "Abdurrahim", role: "admin" },
@@ -241,7 +242,6 @@
       location.reload();
     }
 
-    // Fungsi format ACV: mengubah desimal (0.79 -> 79%)
     function formatAcv(val) {
       if (val === null || val === undefined || val === "") return "0%";
       if (typeof val === "string" && val.includes("%")) return val;
@@ -250,7 +250,6 @@
       return Math.round(num * 100) + "%";
     }
 
-    // Fungsi format Tanggal agar akurat tidak bergeser zona waktu
     function formatTanggal(tglStr) {
       if (!tglStr) return "";
       const d = new Date(tglStr);
