@@ -206,9 +206,6 @@
     let currentUser = null;
     document.getElementById("lap_tanggal").valueAsDate = new Date();
 
-    // Pengecekan otomatis localStorage dihapus, sehingga setiap kali halaman dibuka 
-    // akan selalu mulai dari halaman Login.
-
     document.getElementById("loginForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const nik = document.getElementById("nikInput").value.trim();
@@ -234,7 +231,6 @@
     }
 
     function logout() {
-      // Mengosongkan form input NIK saat keluar
       document.getElementById("nikInput").value = "";
       document.getElementById("loginError").classList.add("hidden");
       location.reload();
@@ -250,12 +246,9 @@
 
     function formatTanggal(tglStr) {
       if (!tglStr) return "";
-      const d = new Date(tglStr);
-      if (isNaN(d)) return tglStr;
-      const tahun = d.getFullYear();
-      const bulan = String(d.getMonth() + 1).padStart(2, '0');
-      const hari = String(d.getDate()).padStart(2, '0');
-      return `${tahun}-${bulan}-${hari}`;
+      // Ambil 10 karakter pertama (YYYY-MM-DD) secara aman tanpa konversi zona waktu objek Date
+      const cleanStr = String(tglStr).substring(0, 10);
+      return cleanStr;
     }
 
     async function loadData() {
@@ -274,6 +267,16 @@
           tbody.innerHTML = `<tr><td colspan="18" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
           return;
         }
+
+        // Urutkan ulang data di sisi frontend berbasis string YYYY-MM-DD dan Shift secara presisi (Terbaru di atas)
+        data.laporan.sort((a, b) => {
+          const tglA = String(a.tanggal).substring(0, 10);
+          const tglB = String(b.tanggal).substring(0, 10);
+          if (tglB !== tglA) {
+            return tglB.localeCompare(tglA); // Tanggal terbaru di atas
+          }
+          return Number(b.shift) - Number(a.shift); // Shift 2 di atas Shift 1 jika tanggal sama
+        });
 
         tbody.innerHTML = data.laporan.map((row, index) => {
           const deleteBtn = currentUser.role === "admin" 
