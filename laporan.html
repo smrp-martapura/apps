@@ -24,6 +24,9 @@
         <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition">
           Masuk
         </button>
+        <a href="index.html" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-lg transition flex items-center justify-center text-sm">
+          ← Kembali ke Menu Utama
+        </a>
       </form>
     </div>
   </div>
@@ -151,9 +154,10 @@
     <!-- TABEL REKAP MONITORING -->
     <section class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
       <h2 class="text-lg font-bold text-slate-800 mb-4">Riwayat Laporan Kasir</h2>
-      <table class="w-full text-xs text-center border-collapse border border-slate-300 min-w-[900px]">
+      <table class="w-full text-xs text-center border-collapse border border-slate-300 min-w-[950px]">
         <thead class="bg-slate-200 text-slate-800 font-bold">
           <tr>
+            <th rowspan="2" class="border border-slate-300 p-2">AKSI</th>
             <th rowspan="2" class="border border-slate-300 p-2">TGL / SHIFT</th>
             <th rowspan="2" class="border border-slate-300 p-2">KASIR</th>
             <th colspan="3" class="border border-slate-300 p-1.5 bg-blue-100">SERBA GRATIS</th>
@@ -171,7 +175,7 @@
           </tr>
         </thead>
         <tbody id="tabelBody" class="divide-y divide-slate-200">
-          <tr><td colspan="17" class="p-4 text-slate-500">Memuat data...</td></tr>
+          <tr><td colspan="18" class="p-4 text-slate-500">Memuat data...</td></tr>
         </tbody>
       </table>
     </section>
@@ -240,23 +244,50 @@
 
         const tbody = document.getElementById("tabelBody");
         if (data.laporan.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="17" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="18" class="p-4 text-slate-500">Belum ada data laporan.</td></tr>`;
           return;
         }
 
-        tbody.innerHTML = data.laporan.map(row => `
-          <tr class="hover:bg-slate-50">
-            <td class="border border-slate-300 p-2 font-medium">${row.tanggal}<br><span class="text-blue-600">Shift ${row.shift}</span></td>
-            <td class="border border-slate-300 p-2 font-medium">${row.nama}</td>
-            <td class="border border-slate-300 p-1.5">${row.sg.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.sg.actual}</td><td class="border border-slate-300 p-1.5 text-blue-700 font-semibold">${row.sg.acv}</td>
-            <td class="border border-slate-300 p-1.5">${row.psm.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.psm.actual}</td><td class="border border-slate-300 p-1.5 text-emerald-700 font-semibold">${row.psm.acv}</td>
-            <td class="border border-slate-300 p-1.5">${row.pwp.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.pwp.actual}</td><td class="border border-slate-300 p-1.5 text-amber-700 font-semibold">${row.pwp.acv}</td>
-            <td class="border border-slate-300 p-1.5">${row.seger.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.seger.actual}</td><td class="border border-slate-300 p-1.5 text-purple-700 font-semibold">${row.seger.acv}</td>
-            <td class="border border-slate-300 p-1.5">${row.member.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.member.actual}</td><td class="border border-slate-300 p-1.5 text-rose-700 font-semibold">${row.member.acv}</td>
-          </tr>
-        `).join("");
+        tbody.innerHTML = data.laporan.map((row, index) => {
+          // Tombol Hapus hanya muncul untuk Admin (19012226)
+          const deleteBtn = currentUser.role === "admin" 
+            ? `<button onclick="hapusLaporan('${row.timestamp}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs font-semibold">Hapus</button>` 
+            : `<span class="text-slate-400">-</span>`;
+
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="border border-slate-300 p-2">${deleteBtn}</td>
+              <td class="border border-slate-300 p-2 font-medium">${row.tanggal}<br><span class="text-blue-600">Shift ${row.shift}</span></td>
+              <td class="border border-slate-300 p-2 font-medium">${row.nama}</td>
+              <td class="border border-slate-300 p-1.5">${row.sg.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.sg.actual}</td><td class="border border-slate-300 p-1.5 text-blue-700 font-semibold">${row.sg.acv}</td>
+              <td class="border border-slate-300 p-1.5">${row.psm.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.psm.actual}</td><td class="border border-slate-300 p-1.5 text-emerald-700 font-semibold">${row.psm.acv}</td>
+              <td class="border border-slate-300 p-1.5">${row.pwp.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.pwp.actual}</td><td class="border border-slate-300 p-1.5 text-amber-700 font-semibold">${row.pwp.acv}</td>
+              <td class="border border-slate-300 p-1.5">${row.seger.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.seger.actual}</td><td class="border border-slate-300 p-1.5 text-purple-700 font-semibold">${row.seger.acv}</td>
+              <td class="border border-slate-300 p-1.5">${row.member.target}</td><td class="border border-slate-300 p-1.5 font-bold">${row.member.actual}</td><td class="border border-slate-300 p-1.5 text-rose-700 font-semibold">${row.member.acv}</td>
+            </tr>
+          `;
+        }).join("");
       } catch (err) {
         alert("Gagal memuat data dari Spreadsheet.");
+      }
+    }
+
+    async function hapusLaporan(timestamp) {
+      if (!confirm("Apakah Anda yakin ingin menghapus laporan ini?")) return;
+
+      const payload = {
+        action: "hapusLaporan",
+        nik: currentUser.nik,
+        timestamp: timestamp
+      };
+
+      try {
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+        alert(result.message);
+        loadData();
+      } catch (err) {
+        alert("Gagal menghapus laporan.");
       }
     }
 
