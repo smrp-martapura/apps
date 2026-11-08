@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMRP MARTAPURA SUPER APP</title>
+    <title>SMRP MARTAPURA</title>
     
     <!-- Meta Tags untuk PWA -->
     <meta name="theme-color" content="#1d4ed8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="Satu Aplikasi untuk Semua Kebutuhan Operasional SMRP Martapura">
+    <meta name="description" content="SMRP Martapura Operasional App">
     
     <!-- Manifest Data Terintegrasi -->
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22SMRP%20Martapura%20Super%20App%22,%22short_name%22:%22SMRP%20App%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%23f8fafc%22,%22theme_color%22:%22%231d4ed8%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3222/3222675.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22SMRP%20Martapura%22,%22short_name%22:%22SMRP%20App%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%23f8fafc%22,%22theme_color%22:%22%231d4ed8%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/3222/3222675.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,16 +20,21 @@
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
 
-    <!-- HEADER UTAMA -->
-    <header class="bg-blue-700 text-white py-8 px-4 text-center shadow-md">
-        <h1 class="text-2xl sm:text-3xl font-black tracking-wide uppercase">SMRP MARTAPURA SUPER APP</h1>
-        <p class="text-sm text-blue-100 mt-2 font-medium">Satu Aplikasi untuk Semua Kebutuhan Operasional</p>
+    <!-- HEADER UTAMA (SMRP MARTAPURA) -->
+    <header class="bg-blue-700 text-white py-6 px-4 text-center shadow-md space-y-2">
+        <h1 class="text-2xl sm:text-3xl font-black tracking-wide uppercase">SMRP MARTAPURA</h1>
+        <div class="text-xs sm:text-sm text-blue-100 font-medium space-y-0.5 leading-relaxed">
+            <p class="font-bold text-white">Simpang Martapura/F [SMRP]</p>
+            <p>Jl. Cempaka Gg. Flamboyan RT. 0</p>
+            <p>NPWP: 1000 0000 0689 5166</p>
+            <p>Jl. Gg. Rahayu RT. 011 RW. 00 Martapura</p>
+        </div>
     </header>
 
     <!-- TOMBOL INSTALASI -->
     <div id="install-container" class="hidden max-w-xl w-full mx-auto px-6 pt-4">
         <button id="btn-install" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition animate-bounce">
-            <i class="fa-solid fa-download"></i> INSTAL SMRP SUPER APP DI HP
+            <i class="fa-solid fa-download"></i> INSTAL APLIKASI DI HP
         </button>
     </div>
 
@@ -84,7 +89,7 @@
 
     <!-- FOOTER -->
     <footer class="text-center py-4 text-xs text-slate-400 font-medium">
-        SMRP Super App &copy; 2026 • 1GCX SIMPANG MARTAPURA
+        SMRP Martapura &copy; 2026 • 1GCX SIMPANG MARTAPURA
     </footer>
 
     <!-- SCRIPT UTK MEMICU FITUR INSTAL HP & BERSIHKAN CACHE LAMA -->
